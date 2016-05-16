@@ -62,6 +62,7 @@ public class SearchResultsListViewAdapter extends BaseAdapter{
             LayoutInflater inflator = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflator.inflate(layout_id, null);
+
         }
 
         item = this.items.get(position);

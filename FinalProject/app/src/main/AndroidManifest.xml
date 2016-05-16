@@ -15,7 +15,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchResults"></activity>
+        <activity android:name=".SearchResults" />
+
+        <service
+            android:name=".ServerService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".LostActivity" />
+        <activity android:name=".FoundActivity"></activity>
     </application>
 
 </manifest>
