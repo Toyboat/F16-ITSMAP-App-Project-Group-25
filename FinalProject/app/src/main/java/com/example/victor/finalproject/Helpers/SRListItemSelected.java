@@ -1,8 +1,11 @@
-package com.example.victor.finalproject;
+package com.example.victor.finalproject.Helpers;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.victor.finalproject.Datacontainers.Item;
+import com.example.victor.finalproject.R;
 
 /**
  * Created by Jacob on 16/05/2016.

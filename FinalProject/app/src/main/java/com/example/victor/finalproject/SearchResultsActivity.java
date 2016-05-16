@@ -3,7 +3,7 @@ package com.example.victor.finalproject;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class SearchResults extends AppCompatActivity {
+public class SearchResultsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

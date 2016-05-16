@@ -1,4 +1,4 @@
-package com.example.victor.finalproject;
+package com.example.victor.finalproject.Datacontainers;
 
 import android.graphics.Bitmap;
 import android.location.Location;

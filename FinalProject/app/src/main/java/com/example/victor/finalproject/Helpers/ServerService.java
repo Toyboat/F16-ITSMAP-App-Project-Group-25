@@ -1,10 +1,12 @@
-package com.example.victor.finalproject;
+package com.example.victor.finalproject.Helpers;
 
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
+
+import com.example.victor.finalproject.Datacontainers.Item;
 
 import java.util.ArrayList;
 import java.util.List;

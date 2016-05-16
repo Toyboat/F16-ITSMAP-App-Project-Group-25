@@ -1,4 +1,4 @@
-package com.example.victor.finalproject;
+package com.example.victor.finalproject.Helpers;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+
+import com.example.victor.finalproject.Datacontainers.Item;
+import com.example.victor.finalproject.R;
 
 import java.util.List;
 

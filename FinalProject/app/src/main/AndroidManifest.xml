@@ -15,10 +15,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchResults" />
+        <activity android:name=".SearchResultsActivity" />
 
         <service
-            android:name=".ServerService"
+            android:name=".Helpers.ServerService"
             android:enabled="true"
             android:exported="true" />
 
