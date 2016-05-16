@@ -20,7 +20,10 @@
         <service
             android:name=".ServerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".LostActivity" />
+        <activity android:name=".FoundActivity"></activity>
     </application>
 
 </manifest>

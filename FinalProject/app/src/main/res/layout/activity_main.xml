@@ -9,4 +9,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.victor.finalproject.MainActivity">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lost"
+        android:id="@+id/lostButton"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="112dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Found"
+        android:id="@+id/foundButton"
+        android:layout_below="@+id/lostButton"
+        android:layout_alignLeft="@+id/lostButton"
+        android:layout_alignStart="@+id/lostButton"
+        android:layout_marginTop="110dp" />
 </RelativeLayout>
