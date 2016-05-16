@@ -51,7 +51,7 @@ public class SearchResultsListViewAdapter extends BaseAdapter{
         if (convertView == null) {
             LayoutInflater inflator = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflator.inflate(R.layout.weatherinfo_listitem, null);
+            convertView = inflator.inflate(R.layout.search_result_listitem, null);
         }
         return null;
     }
