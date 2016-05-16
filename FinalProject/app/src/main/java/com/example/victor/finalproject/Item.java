@@ -30,6 +30,23 @@ public class Item {
         this.timestamp = timestamp;
         this.tags = tags;
     }
-
+    public int getId(){
+        return this.id;
+    }
+    public String getDescription(){
+        return this.description;
+    }
+    public Location getLocation(){
+        return this.location;
+    }
+    public int getUserId(){
+        return this.userid;
+    }
+    public int getTimeStamp(){
+        return this.timestamp;
+    }
+    public List<String> getTags(){
+        return this.tags;
+    }
 
 }
