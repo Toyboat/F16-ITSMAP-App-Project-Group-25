@@ -13,13 +13,10 @@ public class Item {
 
     public final int id;
     public final String description;
-
     public final Location location;
     public final int userid;
     public final int timestamp;
-
     public final Bitmap thumbnail;
-
     public final List<String> tags;
 
     public Item(int id, String description, Location location, int userid, int timestamp, List<String> tags, Bitmap thumbnail)
