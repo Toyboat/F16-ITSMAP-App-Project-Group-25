@@ -27,4 +27,13 @@
         android:layout_alignLeft="@+id/lostButton"
         android:layout_alignStart="@+id/lostButton"
         android:layout_marginTop="110dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:id="@+id/searchButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp" />
 </RelativeLayout>

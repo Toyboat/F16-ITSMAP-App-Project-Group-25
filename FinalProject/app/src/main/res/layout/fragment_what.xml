@@ -10,10 +10,12 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="match_parent"
         android:text="@string/menu_what"
-        android:layout_gravity="center"
-
+        android:fontFamily="sans-serif-smallcaps"
+        android:textSize="120sp"
+        android:layout_gravity="center_horizontal|top"
+        android:textAlignment="center"
         />
 
 </FrameLayout>
