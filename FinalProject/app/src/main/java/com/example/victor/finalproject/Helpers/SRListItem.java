@@ -11,6 +11,8 @@ import com.example.victor.finalproject.R;
  * Created by Jacob on 16/05/2016.
  */
 public class SRListItem {
+    private SRListItem(){}
+
     public static void populateView(View view, Item item)
     {
         ImageView thumbnail;

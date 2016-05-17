@@ -95,7 +95,7 @@ public class SearchResultsListViewAdapter extends BaseAdapter{
                     break;
 
                 case R.layout.search_result_listitem_selected:
-                    SRListItemSelected.populateView(convertView,item);
+                    SRListItemSelected.populateView(position,context,convertView,item);
                     break;
 
                 default:

@@ -10,6 +10,13 @@
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestButton"
+        android:id="@+id/btnClick"
+        android:layout_gravity="right" />
+
     <ImageView
         android:layout_width="104dp"
         android:layout_height="104dp"
