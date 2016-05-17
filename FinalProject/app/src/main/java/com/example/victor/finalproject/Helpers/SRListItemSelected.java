@@ -30,7 +30,9 @@ public class SRListItemSelected {
         txtTags = (TextView) view.findViewById(R.id.txtTags);
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        thumbnail.setImageBitmap(item.thumbnail);
+        if (item.thumbnail != null) {
+            thumbnail.setImageBitmap(item.thumbnail);
+        }
         txtDescription.setText(item.description);
         txtTags.setText(item.tags.toString());
         txtTime.setText(Integer.toString(item.timestamp));

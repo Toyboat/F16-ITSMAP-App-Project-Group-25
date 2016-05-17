@@ -3,6 +3,7 @@ package com.example.victor.finalproject.Datacontainers;
 import android.graphics.Bitmap;
 import android.location.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,6 +47,12 @@ public class Item {
     }
     public List<String> getTags(){
         return this.tags;
+    }
+
+
+    public static Item getDummy()
+    {
+        return new Item(0,"DummyDescription",new Location("Loco"),0,0,new ArrayList<String>(), null);
     }
 
 }

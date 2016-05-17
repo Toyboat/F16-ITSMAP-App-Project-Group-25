@@ -36,7 +36,7 @@ public class ServerService extends Service {
 
     public static List<Item> getResults(){
         //TODO: getDataFromServer
-
+/*
         //======================================Dummylist - remove when we have a server:
         List dummyList = new ArrayList<Item>();
         Location dummyLoco = new Location("DummyLocation");
@@ -49,6 +49,12 @@ public class ServerService extends Service {
         dummyList.add(i2);
 
         //=====================================end of dummy list
+        */
+        List dummyList = new ArrayList<Item>();
+        for (int i= 0; i < 20; i++)
+        {
+            dummyList.add(Item.getDummy());
+        }
         return dummyList;
     }
 
