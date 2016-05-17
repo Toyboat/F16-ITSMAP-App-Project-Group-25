@@ -15,7 +15,10 @@
         android:layout_height="wrap_content"
         android:text="TestButton"
         android:id="@+id/btnClick"
-        android:layout_gravity="right" />
+        android:layout_gravity="right"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        />
 
     <ImageView
         android:layout_width="104dp"
