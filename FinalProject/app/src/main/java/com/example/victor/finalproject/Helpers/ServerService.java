@@ -28,7 +28,13 @@ public class ServerService extends Service {
         return binder;
     }
 
-    private List<Item> getResults(Item i){
+    public static void searchFor(Item i)
+    {
+
+
+    }
+
+    public static List<Item> getResults(){
         //TODO: getDataFromServer
 
         //======================================Dummylist - remove when we have a server:
