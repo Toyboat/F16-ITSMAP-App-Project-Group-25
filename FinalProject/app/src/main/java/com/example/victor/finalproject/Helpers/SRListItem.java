@@ -11,6 +11,8 @@ import com.example.victor.finalproject.R;
  * Created by Jacob on 16/05/2016.
  */
 public class SRListItem {
+    private SRListItem(){}
+
     public static void populateView(View view, Item item)
     {
         ImageView thumbnail;
@@ -23,7 +25,9 @@ public class SRListItem {
         txtTags = (TextView) view.findViewById(R.id.txtTags);
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        thumbnail.setImageBitmap(item.thumbnail);
+        if (item.thumbnail != null) {
+            thumbnail.setImageBitmap(item.thumbnail);
+        }
         txtDescription.setText(item.description);
         txtTags.setText(item.tags.toString());
         txtTime.setText(Integer.toString(item.timestamp));
