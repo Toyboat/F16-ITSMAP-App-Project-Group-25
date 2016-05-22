@@ -12,8 +12,11 @@ if ($item != null)
 	{
 		$result = true;
 	}
-}
 echo '{"result":"' . ($result ? "true" : "false") . '", "refid":' . $refid . '}';
+}else
+{
+echo '{"result":"' . ($result ? "true" : "false") . '"}';
+}
 
 
 ?>

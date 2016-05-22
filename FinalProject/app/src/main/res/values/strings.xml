@@ -6,7 +6,7 @@
     <string name="menu_what">WHAT</string>
     <string name="menu_where">WHERE</string>
     <string name="menu_when">WHEN</string>
-    <string name="server_address">http://192.168.43.140/LostFoundDBHelper/</string>
+    <string name="server_address">http://192.168.1.153/LostFoundDBHelper/</string>
     <string name="server_search_script">lostSearch.php</string>
     <string name="server_upload_script">uploadFound.php</string>
 </resources>

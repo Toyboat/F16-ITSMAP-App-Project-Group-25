@@ -15,6 +15,18 @@ function grabJsonItem()
 			}
 		}
 	}
+	if (!empty($_POST))
+	{
+		if (array_key_exists("jsonItem", $_POST))
+		{
+			$jsonItem = json_decode($_POST["jsonItem"],true);
+			
+			if (Item::check_defined($jsonItem))
+			{
+				$item = Item::getFromArray($jsonItem);
+			}
+		}
+	}
 	return $item;
 }
 ?>

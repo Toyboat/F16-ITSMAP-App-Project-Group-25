@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.util.Base64;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -121,7 +122,9 @@ public class Item {
 
     public static Bitmap decodeBase64(String input)
     {
-        byte[] decodedBytes = Base64.decode(input, 0);
+        Log.println(Log.DEBUG, "decodeBase64", "Commencing image decoding.");
+        byte[] decodedBytes = Base64.decode(input, Base64.DEFAULT);
+        Log.println(Log.DEBUG, "decodeBase64", "decodedBytes.length: " + Integer.toString(decodedBytes.length) );
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
@@ -149,6 +152,7 @@ public class Item {
         if (encoded != null)
         {
             try{
+                Log.println(Log.DEBUG,"Base64ToBitmap","Commencing image decoding. Length: "+Integer.toString(encoded.length()));
                 bitmap = decodeBase64(encoded);
 
             }
@@ -228,6 +232,7 @@ public class Item {
             int userid = jObj.getInt(jsonUserID);
             int timestamp = jObj.getInt(jsonTimeStamp);
             List<String> tags = JsonToStringList(jObj.get(jsonTags).toString());
+            Log.println(Log.DEBUG,"FromJsonString","Commencing image decoding.");
             Bitmap thumbnail = Base64ToBitmap(jObj.getString(jsonThumbnail));
 
             item = new Item(id,description,location,userid,timestamp,tags,thumbnail);
