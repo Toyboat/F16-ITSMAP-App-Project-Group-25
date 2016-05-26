@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.victor.finalproject.R;
 
@@ -27,6 +30,7 @@ public class WhatFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private WhatFragmentListener mListener;
+    private Button what;
 
     public WhatFragment() {
         // Required empty public constructor
@@ -57,11 +61,20 @@ public class WhatFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_what, container, false);
+        what = (Button) view.findViewById(R.id.whatfragmentButton);
+        what.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast = Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_what, container, false);
     }
