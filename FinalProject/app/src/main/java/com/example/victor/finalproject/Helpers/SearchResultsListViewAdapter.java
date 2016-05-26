@@ -105,4 +105,8 @@ public class SearchResultsListViewAdapter extends BaseAdapter{
         }
         return convertView;
     }
+
+    public int getSelected() {
+        return this.selected;
+    }
 }
