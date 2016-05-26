@@ -13,8 +13,9 @@ import com.example.victor.finalproject.Fragments.WhatFragment;
 import com.example.victor.finalproject.Fragments.WhenFragment;
 import com.example.victor.finalproject.Fragments.WhereFragment;
 
-public class LostActivity extends FragmentActivity
-        implements WhatFragment.WhatFragmentListener, WhenFragment.WhenFragmentListener, WhereFragment.WhereFragmentListener{
+public class LostActivity extends FragmentActivity implements WhatWhenWhereInterface{
+
+    private WhatWhenWhereInterface fragmentInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,19 +26,8 @@ public class LostActivity extends FragmentActivity
         Configuration config = getResources().getConfiguration();
 
     }
-
-    @Override
-    public void onWhatFragmentInteraction(Uri uri) {
+    public void expandWhat(){
 
     }
 
-    @Override
-    public void onWhenFragmentInteraction(Uri uri) {
-
-    }
-
-    @Override
-    public void onWhereFragmentInteraction(Uri uri) {
-
-    }
 }
