@@ -3,6 +3,7 @@ package com.example.victor.finalproject.Helpers;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
@@ -18,6 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.victor.finalproject.Datacontainers.Item;
+import com.example.victor.finalproject.ProjectConstants;
 import com.example.victor.finalproject.R;
 
 import org.json.JSONArray;
@@ -32,6 +34,8 @@ public class ServerService extends Service {
     //todo: implement server and connect
     public ServerService() {
     }
+
+
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder {
@@ -49,9 +53,13 @@ public class ServerService extends Service {
     public static void searchFor(Context context,Item i)
     {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        String address = context.getResources().getString(R.string.server_address);
-        String scriptname = context.getResources().getString(R.string.server_search_script);
-        String url = address + scriptname + "?jsonItem=";
+        SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress,context.getString(R.string.server_address));
+
+               // String address = context.getResources().getString(R.string.server_address);
+        String subdir = context.getString(R.string.server_subdir);
+        String scriptname = context.getString(R.string.server_search_script);
+        String url = "http://" + address+ "/" + subdir + "/" + scriptname + "?jsonItem=";
 
         url += i.toJSONString();
         Log.println(Log.DEBUG,"StringRequest","URL: "+url);
@@ -120,8 +128,9 @@ public class ServerService extends Service {
         //TODO: store data on server
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         String address = context.getResources().getString(R.string.server_address);
+        String subdir = context.getResources().getString(R.string.server_subdir);
         String scriptname = context.getResources().getString(R.string.server_upload_script);
-        String url = address + scriptname;
+        String url = "http://" + address + "/" + subdir + "/" + scriptname;
         //+ "?jsonItem=";
 
         //url += i.toJSONString();

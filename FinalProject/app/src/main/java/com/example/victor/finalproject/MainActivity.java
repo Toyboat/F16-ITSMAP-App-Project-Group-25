@@ -2,6 +2,7 @@ package com.example.victor.finalproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -19,16 +20,27 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public final int THUMBNAIL = 667;
+
     private Button lostButton;
     private Button foundButton;
     private Button searchButton;
     private Button requestButton;
     private Button uploadButton;
+    private Button settingsButton;
     private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedpreferences = getSharedPreferences(getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        if (!sharedpreferences.contains(ProjectConstants.SharedPrefs_ServerAddress))
+        {
+            editor.putString(ProjectConstants.SharedPrefs_ServerAddress,getString(R.string.server_address));
+            editor.commit();
+        }
+
         context = this;
         lostButton  = (Button) findViewById(R.id.lostButton);
         foundButton = (Button) findViewById(R.id.foundButton);
@@ -36,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         requestButton = (Button) findViewById(R.id.btnRequest);
         uploadButton = (Button) findViewById(R.id.btnUpload);
+        settingsButton  = (Button) findViewById(R.id.btnSettings);
 
         lostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toSettingsIntent = new Intent(MainActivity.this,SettingsActivity.class);
+                startActivity(toSettingsIntent);
             }
         });
     }
