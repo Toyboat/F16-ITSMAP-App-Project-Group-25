@@ -14,11 +14,15 @@
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/menu_what"
-        android:fontFamily="sans-serif-smallcaps"
-        android:textSize="120sp"
         android:layout_gravity="center_horizontal|top"
+
+        android:text="@string/menu_what"
+        android:textSize="120sp"
         android:textAlignment="center"
+        android:fontFamily="sans-serif-smallcaps"
+
+        android:onClick="onClick"
+        android:clickable="true"
 
         />
 

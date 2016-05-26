@@ -2,9 +2,11 @@ package com.example.victor.finalproject.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,28 +48,30 @@ public class WhatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_what, container, false);
-        what = (TextView) view.findViewById(R.id.whatfragmentButton);
-        what.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(fragmentInterface != null) {
-                    Toast toast = Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_what, container, false);
+        //what = (TextView) view.findViewById(R.id.whatfragmentButton);
+        //what.setOnClickListener(this);
+        return view;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try{
-            fragmentInterface = (WhatWhenWhereInterface) activity;
+            fragmentInterface = (WhatWhenWhereInterface) context;
         } catch (ClassCastException ex) {
             //Activity does not implement correct interface
-            throw new ClassCastException(activity.toString() + " must implement WhatWhenWhereInterface");
+            throw new ClassCastException(context.toString() + " must implement WhatWhenWhereInterface");
+        }
+    }
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.whatfragmentButton:
+                Log.d("OnClickListener", "Clicked!");
+                if (fragmentInterface != null) {
+                    Toast toast = Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            break;
         }
     }
 

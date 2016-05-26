@@ -17,7 +17,7 @@ import com.example.victor.finalproject.Helpers.ServerService;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
+//todo: implement "Login" via SharedPreferences - ask them to create a username at first login, then save the username locally and use it in this activity to say hello
     public final int THUMBNAIL = 667;
     private Button lostButton;
     private Button foundButton;

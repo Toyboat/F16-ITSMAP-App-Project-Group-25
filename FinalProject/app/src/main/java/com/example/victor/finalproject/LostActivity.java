@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.example.victor.finalproject.Fragments.WhatFragment;
 import com.example.victor.finalproject.Fragments.WhenFragment;
@@ -28,6 +30,9 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
     }
     public void expandWhat(){
 
+    }
+    public void onClick(View v){
+        Log.d("LostActivity", "Clicked!");
     }
 
 }
