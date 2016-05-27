@@ -19,6 +19,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.victor.finalproject.Datacontainers.Item;
+import com.example.victor.finalproject.Datacontainers.SearchResultsSingleton;
 import com.example.victor.finalproject.ProjectConstants;
 import com.example.victor.finalproject.R;
 
@@ -77,7 +78,7 @@ public class ServerService extends Service {
                         items.add(Item.fromJSONString(arr.get(x).toString()));
                     }
                     //Item item = Item.fromJSONString(response);
-                    ServerService.items = items;
+                    ServerService.setResults(items);
                 }catch(Exception e)
                 {
                     e.printStackTrace();
@@ -96,7 +97,13 @@ public class ServerService extends Service {
     }
 
 
-    public static List<Item> items;
+    //public static List<Item> items;
+
+    public static void setResults(List<Item> items)
+    {
+        SearchResultsSingleton.getInstance().setSearchResults(items);
+    }
+
     public static List<Item> getResults(){
         //TODO: getDataFromServer
 /*
@@ -113,6 +120,7 @@ public class ServerService extends Service {
 
         //=====================================end of dummy list
         */
+        /*
         if (items == null) {
             List dummyList = new ArrayList<Item>();
             for (int i = 0; i < 20; i++) {
@@ -120,7 +128,16 @@ public class ServerService extends Service {
             }
             items = dummyList;
         }
+
+
         return items;
+        */
+        return SearchResultsSingleton.getInstance().getSearchResults();
+    }
+
+    public static void clearItems()
+    {
+        SearchResultsSingleton.getInstance().cleanup();
     }
 
 
@@ -159,7 +176,7 @@ public class ServerService extends Service {
                     }
 
                     //Item item = Item.fromJSONString(response);
-                    ServerService.items = items;
+                    //ServerService.items = items;
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.println(Log.DEBUG, "StringRequest", "Error: " + response);
