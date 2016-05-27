@@ -127,7 +127,10 @@ public class ServerService extends Service {
     public static int storeItem(Context context,Item i) {
         //TODO: store data on server
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        String address = context.getResources().getString(R.string.server_address);
+
+        SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress, context.getString(R.string.server_address));
+
         String subdir = context.getResources().getString(R.string.server_subdir);
         String scriptname = context.getResources().getString(R.string.server_upload_script);
         String url = "http://" + address + "/" + subdir + "/" + scriptname;
