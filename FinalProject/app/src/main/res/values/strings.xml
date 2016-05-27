@@ -6,7 +6,11 @@
     <string name="menu_what">WHAT</string>
     <string name="menu_where">WHERE</string>
     <string name="menu_when">WHEN</string>
-    <string name="server_address">http://192.168.1.153/LostFoundDBHelper/</string>
+    <string name="server_address">LostAndFoundServer.example</string>
+    <string name="server_subdir">LostFoundDBHelper</string>
     <string name="server_search_script">lostSearch.php</string>
     <string name="server_upload_script">uploadFound.php</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="shared_prefs_id">com.example.victor.finalproject</string>
+    <string name="SharedPrefs_ServerAddress">serveraddress</string>
 </resources>
