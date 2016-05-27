@@ -67,15 +67,19 @@ public class WhatFragment extends Fragment {
         toast.show();
     }
 
-    public void expand(){
+    public void expand(String s){
         Log.d("expand called","from WhatFragment");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.what_lost_opened, null);
+        if(s == "lost"){
+            view = inflater.inflate(R.layout.what_lost_opened, null);
+        }else{
+            view = inflater.inflate(R.layout.what_found_opened, null);
+        }
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
     }
-    public void compress(){
+    public void compress(String s){
         Log.d("expand called","from WhatFragment");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_what, null);

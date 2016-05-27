@@ -62,14 +62,18 @@ public class WhenFragment extends Fragment {
             throw new ClassCastException(activity.toString() + " must implement WhatWhenWhereInterface");
         }
     }
-    public void expand(){
+    public void expand(String s){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.when_lost_opened, null);
+        if(s == "lost"){
+            view = inflater.inflate(R.layout.when_lost_opened, null);
+        }else{
+            view = inflater.inflate(R.layout.when_found_opened, null);
+        }
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
     }
-    public void compress(){
+    public void compress(String s){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_when, null);
         ViewGroup rootView = (ViewGroup) getView();

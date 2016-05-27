@@ -6,6 +6,8 @@
     <string name="menu_what">WHAT</string>
     <string name="menu_where">WHERE</string>
     <string name="menu_when">WHEN</string>
+    <string name="lost_activity">Lost</string>
+    <string name="found_activity">Found</string>
     <string name="server_address">LostAndFoundServer.example</string>
     <string name="server_subdir">LostFoundDBHelper</string>
     <string name="server_search_script">lostSearch.php</string>

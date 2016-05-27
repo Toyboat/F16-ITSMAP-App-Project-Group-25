@@ -30,22 +30,23 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
 
     }
     public void expand(int id){
+        String s = getString(R.string.lost_activity);
         switch(id){
             case 1://expand what
-                whatf.expand();
-                whenf.compress();
-                wheref.compress();
+                whatf.expand(s);
+                whenf.compress(s);
+                wheref.compress(s);
             break;
             case 2: //expand when
-                whatf.compress();
-                whenf.expand();
-                wheref.compress();
+                whatf.compress(s);
+                whenf.expand(s);
+                wheref.compress(s);
 
             break;
             case 3: //expand where
-                whatf.compress();
-                whenf.compress();
-                wheref.expand();
+                whatf.compress(s);
+                whenf.compress(s);
+                wheref.expand(s);
             break;
         }
     }
@@ -67,5 +68,4 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
 
         }
     }
-
 }

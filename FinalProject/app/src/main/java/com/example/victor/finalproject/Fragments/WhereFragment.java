@@ -16,7 +16,7 @@ import com.example.victor.finalproject.WhatWhenWhereInterface;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link WhereFragment.WhereFragmentListener} interface
+ * {@link } interface
  * to handle interaction events.
  * Use the {@link WhereFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -58,16 +58,19 @@ public class WhereFragment extends Fragment {
             throw new ClassCastException(activity.toString() + " must implement WhatWhenWhereInterface");
         }
     }
-    public void expand(){
-        Log.d("expand called","from WhatFragment");
+    public void expand(String s){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.where_lost_opened, null);
+        if(s == "lost"){
+            view = inflater.inflate(R.layout.where_lost_opened, null);
+        }else
+        {
+            view = inflater.inflate(R.layout.where_found_opened, null);
+        }
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
     }
-    public void compress(){
-        Log.d("expand called","from WhatFragment");
+    public void compress(String s){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_where, null);
         ViewGroup rootView = (ViewGroup) getView();
