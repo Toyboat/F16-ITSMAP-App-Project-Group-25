@@ -9,18 +9,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.victor.finalproject.Datacontainers.Item;
+import com.example.victor.finalproject.Datacontainers.SearchResultsSingleton;
 import com.example.victor.finalproject.Helpers.SearchResultsListViewAdapter;
 import com.example.victor.finalproject.Helpers.ServerService;
 
 import java.util.List;
 
 public class SearchResultsActivity extends AppCompatActivity {
+    private static final String moduleName = "SearchResultsActivity";
 
-
-    public static final String POSITIONINT = "SRPositionInt", itemsString = "SRA_ITEMSLIST", adapterString = "SRA_LVADAPTER";
+    private static final String POSITIONINT = "SRPositionInt";
 
     private ListView resultsList;
     private SearchResultsListViewAdapter adapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +61,29 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(POSITIONINT,adapter.getSelected());
+        outState.putInt(POSITIONINT, adapter.getSelected());
         super.onSaveInstanceState(outState);
     }
 
     public void updateList()
     {
         adapter = new SearchResultsListViewAdapter(resultsList, this, ServerService.getResults() );
+        /*SearchResultsSingleton.getInstance().getSearchResults()*/
         resultsList.setAdapter(adapter);
+    }
+
+    private void cleanup() //clears reference to itemlist in application singleton
+    {
+        Log.println(Log.DEBUG,moduleName,"Running Cleanup");
+        ServerService.clearItems();
     }
 
     @Override
     protected void onDestroy() {
-        Log.println(Log.DEBUG,"SearchResultsActivity","onDestroy()");
+        Log.println(Log.DEBUG,moduleName,"onDestroy()");
+        if (isFinishing()) {
+            cleanup();
+        }
         super.onDestroy();
 
     }
