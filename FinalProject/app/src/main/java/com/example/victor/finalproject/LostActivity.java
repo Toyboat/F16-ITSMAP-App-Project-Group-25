@@ -2,7 +2,6 @@ package com.example.victor.finalproject;
 
 import android.app.FragmentManager;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,8 +15,10 @@ import com.example.victor.finalproject.Fragments.WhenFragment;
 import com.example.victor.finalproject.Fragments.WhereFragment;
 
 public class LostActivity extends FragmentActivity implements WhatWhenWhereInterface{
-
     private WhatWhenWhereInterface fragmentInterface;
+    private WhatFragment whatf;
+    private WhenFragment whenf;
+    private WhereFragment wheref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +29,43 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         Configuration config = getResources().getConfiguration();
 
     }
-    public void expandWhat(){
+    public void expand(int id){
+        switch(id){
+            case 1://expand what
+                whatf.expand();
+                whenf.compress();
+                wheref.compress();
+            break;
+            case 2: //expand when
+                whatf.compress();
+                whenf.expand();
+                wheref.compress();
 
+            break;
+            case 3: //expand where
+                whatf.compress();
+                whenf.compress();
+                wheref.expand();
+            break;
+        }
     }
     public void onClick(View v){
-        Log.d("LostActivity", "Clicked!");
+        whatf = (WhatFragment) getSupportFragmentManager().findFragmentById(R.id.whatFragment);
+        whenf = (WhenFragment) getSupportFragmentManager().findFragmentById(R.id.whenFragment);
+        wheref = (WhereFragment) getSupportFragmentManager().findFragmentById(R.id.whereFragment);
+
+        switch (v.getId()){
+            case R.id.whatfragmentButton:
+                expand(1);
+            break;
+            case R.id.whenfragmentButton:
+                expand(2);
+            break;
+            case R.id.wherefragmentButton:
+               expand(3);
+            break;
+
+        }
     }
 
 }

@@ -9,6 +9,7 @@
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/whenfragmentButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/menu_when"
@@ -16,6 +17,9 @@
         android:textSize="120sp"
         android:layout_gravity="center"
         android:textAlignment="center"
+
+        android:onClick="onClick"
+        android:clickable="true"
 
         />
 

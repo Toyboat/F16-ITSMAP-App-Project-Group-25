@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +27,7 @@ import com.example.victor.finalproject.WhatWhenWhereInterface;
 public class WhatFragment extends Fragment {
     private WhatWhenWhereInterface fragmentInterface;
     private TextView what;
+    private View view;
 
     public WhatFragment() {
         // Required empty public constructor
@@ -47,32 +47,41 @@ public class WhatFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_what, container, false);
-        //what = (TextView) view.findViewById(R.id.whatfragmentButton);
-        //what.setOnClickListener(this);
+        view = inflater.inflate(R.layout.fragment_what, container, false);
         return view;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         try{
-            fragmentInterface = (WhatWhenWhereInterface) context;
+            fragmentInterface = (WhatWhenWhereInterface) activity;
         } catch (ClassCastException ex) {
             //Activity does not implement correct interface
-            throw new ClassCastException(context.toString() + " must implement WhatWhenWhereInterface");
+            throw new ClassCastException(activity.toString() + " must implement WhatWhenWhereInterface");
         }
     }
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.whatfragmentButton:
-                Log.d("OnClickListener", "Clicked!");
-                if (fragmentInterface != null) {
-                    Toast toast = Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            break;
-        }
+    public void onClick() {
+        Log.d("OnClickListener", "Clicked!");
+        Toast toast = Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void expand(){
+        Log.d("expand called","from WhatFragment");
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.what_lost_opened, null);
+        ViewGroup rootView = (ViewGroup) getView();
+        rootView.removeAllViews();
+        rootView.addView(view);
+    }
+    public void compress(){
+        Log.d("expand called","from WhatFragment");
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.fragment_what, null);
+        ViewGroup rootView = (ViewGroup) getView();
+        rootView.removeAllViews();
+        rootView.addView(view);
     }
 
     @Override
@@ -80,17 +89,4 @@ public class WhatFragment extends Fragment {
         super.onDetach();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    private void expandWhat(){
-
-    }
 }
