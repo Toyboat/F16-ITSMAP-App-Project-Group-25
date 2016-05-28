@@ -1,5 +1,6 @@
 package com.example.victor.finalproject.Helpers;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Datacontainers.SearchResultsSingleton;
+import com.example.victor.finalproject.Datacontainers.VolleyQueueInstance;
 import com.example.victor.finalproject.ProjectConstants;
 import com.example.victor.finalproject.R;
 
@@ -31,12 +33,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ServerService extends Service {
+public class ServerService extends IntentService {
     //todo: implement server and connect
+
+    private static final String moduleName = "ServerService";
+
     public ServerService() {
+        super("IntentService");
     }
 
 
+/*
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder {
@@ -49,11 +56,59 @@ public class ServerService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
+*/
+
+    private static final String ACTION_SEARCH = "searchAction";
+    private static final String ACTION_UPLOAD = "uploadAction";
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        String action = intent.getAction();
+        Log.println(Log.DEBUG,moduleName,"onHandleIntent()");
+
+        if (action == ACTION_SEARCH)
+        {
+            Log.println(Log.DEBUG,moduleName,"onHandleIntent() => ACTION_SEARCH");
+            Item i = Item.DecodeFromIntent(intent);
+            if (i != null)
+            {
+                searchFor(i);
+            }
+        }
+        else if (action == ACTION_UPLOAD)
+        {
+            Log.println(Log.DEBUG,moduleName,"onHandleIntent() => ACTION_UPLOAD");
+            Item i = Item.DecodeFromIntent(intent);
+            if (i != null)
+            {
+                storeItem(i);
+            }
+        }
+    }
+    //Implementing this as an Intent Service instead
+
+    public static void searchFor(Context context, Item i)
+    {
+        Intent intent = new Intent(context,ServerService.class);
+        intent.setAction(ACTION_SEARCH);
+        i.EncodeToIntent(intent);
+        context.startService(intent);
+
+    }
+    public static void storeItem(Context context, Item i) {
+        Intent intent = new Intent(context,ServerService.class);
+        intent.setAction(ACTION_UPLOAD);
+        i.EncodeToIntent(intent);
+        context.startService(intent);
+
+    }
 
     //public static void searchFor(Item i)
-    public static void searchFor(Context context,Item i)
+    public void searchFor(Item i)
     {
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = VolleyQueueInstance.getInstance().getRequestQueue();
+        Context context = getApplicationContext();
+
         SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
         String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress,context.getString(R.string.server_address));
 
@@ -104,6 +159,8 @@ public class ServerService extends Service {
         SearchResultsSingleton.getInstance().setSearchResults(items);
     }
 
+
+
     public static List<Item> getResults(){
         //TODO: getDataFromServer
 /*
@@ -141,9 +198,10 @@ public class ServerService extends Service {
     }
 
 
-    public static int storeItem(Context context,Item i) {
+    public void storeItem(Item i) {
         //TODO: store data on server
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = VolleyQueueInstance.getInstance().getRequestQueue();
+        Context context = getApplicationContext();
 
         SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
         String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress, context.getString(R.string.server_address));
@@ -207,6 +265,6 @@ public class ServerService extends Service {
     };
         requestQueue.add(stringRequest);
 
-        return 0;
+        //return 0;
     }
 }

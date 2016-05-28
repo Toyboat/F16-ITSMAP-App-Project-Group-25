@@ -1,5 +1,6 @@
 package com.example.victor.finalproject.Datacontainers;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -23,11 +24,11 @@ public class Item {
     public final String description;
     public final Location location;
     public final int userid;
-    public final int timestamp;
+    public final long timestamp;
     public final Bitmap thumbnail;
     public final List<String> tags;
 
-    public Item(int id, String description, Location location, int userid, int timestamp, List<String> tags, Bitmap thumbnail)
+    public Item(int id, String description, Location location, int userid, long timestamp, List<String> tags, Bitmap thumbnail)
     {
         this.id = id;
         this.description = description;
@@ -49,7 +50,7 @@ public class Item {
     public int getUserId(){
         return this.userid;
     }
-    public int getTimeStamp(){
+    public long getTimeStamp(){
         return this.timestamp;
     }
     public List<String> getTags(){
@@ -246,5 +247,27 @@ public class Item {
         return item;
 
 
+    }
+
+    private static final String intentItemKey = "EncodedJSONItem";
+
+    public static void EncodeToIntent(Intent intent, Item item)
+    {
+        intent.putExtra(intentItemKey,item.toJSONString());
+    }
+
+    public void EncodeToIntent(Intent intent)
+    {
+        EncodeToIntent(intent,this);
+    }
+
+    public static Item DecodeFromIntent(Intent intent)
+    {
+        if (intent.hasExtra(intentItemKey))
+        {
+            String itemJson = intent.getStringExtra(intentItemKey);
+            return Item.fromJSONString(itemJson);
+        }
+        return null;
     }
 }

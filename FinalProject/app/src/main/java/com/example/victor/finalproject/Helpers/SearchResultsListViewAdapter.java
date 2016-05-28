@@ -61,9 +61,9 @@ public class SearchResultsListViewAdapter extends BaseAdapter{
     {
         if (this.selected != i) {
             this.selected = i;
-            Toast.makeText(this.context, "Selected " + Integer.toString(this.selected), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this.context, "Selected " + Integer.toString(this.selected), Toast.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(this.context, "De-Selected " + Integer.toString(this.selected), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this.context, "De-Selected " + Integer.toString(this.selected), Toast.LENGTH_SHORT).show();
             this.selected = -1;
         }
         }

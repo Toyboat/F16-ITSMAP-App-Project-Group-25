@@ -93,6 +93,6 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         Bitmap thumbnail = whatf.getThumbnail();
         Location location = wheref.getUserLocation();
         whenf.requestData();
-       Item item = new Item(int id, description, location, int userid, int timestamp, List<String> tags, thumbnail);
+      // Item item = new Item(int id, description, location, int userid, int timestamp, List<String> tags, thumbnail);
     }
 }

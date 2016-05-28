@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.example.victor.finalproject.Datacontainers.SearchResultsSingleton;
+import com.example.victor.finalproject.Datacontainers.VolleyQueueInstance;
 
 /**
  * Created by Jacob on 27/05/2016.
@@ -24,6 +25,7 @@ public class CustomApplication extends Application {
     {
         Log.println(Log.DEBUG,"CustomApplication","initSingletons()");
         SearchResultsSingleton.initInstance();
+        VolleyQueueInstance.initInstance(getApplicationContext());
     }
 
 }

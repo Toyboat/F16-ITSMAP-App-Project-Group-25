@@ -70,7 +70,6 @@ public class WhatFragment extends Fragment {
     }
 
     public void expand(String s){
-        Log.d("expand called","from WhatFragment");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(s == "lost"){
             view = inflater.inflate(R.layout.what_lost_opened, null);
@@ -82,7 +81,6 @@ public class WhatFragment extends Fragment {
         rootView.addView(view);
     }
     public void compress(String s){
-        Log.d("expand called","from WhatFragment");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_what, null);
         ViewGroup rootView = (ViewGroup) getView();

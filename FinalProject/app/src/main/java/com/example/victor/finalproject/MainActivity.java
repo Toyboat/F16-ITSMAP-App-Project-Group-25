@@ -126,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
 
                     Bitmap newBitmap = Bitmap.createScaledBitmap(tn, (int)newWidth, (int)newHeight,false);
 
-                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, 10, new ArrayList<String>(), newBitmap));
+                    long time = System.currentTimeMillis()/1000;
+
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, new ArrayList<String>(), newBitmap));
 
                 }
                 break;
