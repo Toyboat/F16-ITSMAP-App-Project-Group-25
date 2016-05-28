@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.victor.finalproject.MainActivity;
 import com.example.victor.finalproject.R;
 import com.example.victor.finalproject.WhatWhenWhereInterface;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,6 +36,8 @@ public class WhereFragment extends Fragment {
     private GoogleMap map;
     private double userLatitude;
     private double userLongitude;
+    public static final String USER_LATITUDE = "location_latitude";
+    public static final String USER_LONGITUDE = "location_longitude";
     private boolean userLocationKnown = false;
     private boolean tracing = true;
     private int mapType = GoogleMap.MAP_TYPE_NORMAL;
@@ -53,11 +57,11 @@ public class WhereFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent data = getIntent();
-        if(data.hasExtra(MainActivity.EXTRA_USER_LONGITUDE) && data.hasExtra(MainActivity.EXTRA_USER_LATITUDE)){
+        Intent data = getActivity().getIntent();
+        if(data.hasExtra(USER_LONGITUDE) && data.hasExtra(USER_LATITUDE)){
 
-            userLatitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LATITUDE, 0);
-            userLongitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LONGITUDE, 0);
+            userLatitude = data.getDoubleExtra(USER_LATITUDE, 0);
+            userLongitude = data.getDoubleExtra(USER_LONGITUDE, 0);
             if(userLatitude!=0 && userLongitude!=0) {
                 userLocationKnown = true;
             }
@@ -120,12 +124,12 @@ public class WhereFragment extends Fragment {
     }
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
+        if (map == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
-            if (mMap != null) {
+            if (map != null) {
                 setUpMap();
             }
         }
@@ -133,19 +137,19 @@ public class WhereFragment extends Fragment {
     private void setUpMap() {
         if(userLocationKnown) {
 
-            if(!tracing && !showingExercises){
-                mMap.clear();   //if we are not tracking, remove the marker first
+            if(!tracing){
+                map.clear();   //if we are not tracking, remove the marker first
             }
-            mMap.addMarker(new MarkerOptions().position(new LatLng(userLatitude, userLongitude)).title("You are here!"));
+            map.addMarker(new MarkerOptions().position(new LatLng(userLatitude, userLongitude)).title("You are here!"));
         }
     }
 
     private void zoomToUser(){
         if(userLocationKnown) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(userLatitude, userLongitude), 12));
         } else {
-            Toast.makeText(getApplicationContext(), "User location unknown", Toast.LENGTH_SHORT).show();
+            Log.d("Error","User location unknown");
         }
     }
 
@@ -155,10 +159,10 @@ public class WhereFragment extends Fragment {
 
             //Toast.makeText(getApplicationContext(), "Got location update", Toast.LENGTH_SHORT).show();
 
-            if(data.hasExtra(MainActivity.EXTRA_USER_LONGITUDE) && data.hasExtra(MainActivity.EXTRA_USER_LATITUDE)){
+            if(data.hasExtra(USER_LONGITUDE) && data.hasExtra(USER_LATITUDE)){
 
-                userLatitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LATITUDE, 0);
-                userLongitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LONGITUDE, 0);
+                userLatitude = data.getDoubleExtra(USER_LATITUDE, 0);
+                userLongitude = data.getDoubleExtra(USER_LONGITUDE, 0);
                 if(userLatitude!=0 && userLongitude!=0) {
                     userLocationKnown = true;
                 }
