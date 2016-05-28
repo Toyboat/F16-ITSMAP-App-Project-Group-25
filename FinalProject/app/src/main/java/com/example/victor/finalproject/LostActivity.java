@@ -2,6 +2,8 @@ package com.example.victor.finalproject;
 
 import android.app.FragmentManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
+import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Fragments.WhatFragment;
 import com.example.victor.finalproject.Fragments.WhenFragment;
 import com.example.victor.finalproject.Fragments.WhereFragment;
@@ -19,6 +23,8 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
     private WhatFragment whatf;
     private WhenFragment whenf;
     private WhereFragment wheref;
+    private Button search;
+    private Button cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +33,25 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         FragmentManager fm = getFragmentManager();
         //FragmentTransaction ft = fm.beginTransaction();
         Configuration config = getResources().getConfiguration();
+        search = (Button) findViewById(R.id.searchButton);
+        cancel = (Button) findViewById(R.id.cancelButton);
+        whatf = (WhatFragment) getSupportFragmentManager().findFragmentById(R.id.whatFragment);
+        whenf = (WhenFragment) getSupportFragmentManager().findFragmentById(R.id.whenFragment);
+        wheref = (WhereFragment) getSupportFragmentManager().findFragmentById(R.id.whereFragment);
+        search.setOnClickListener(new View.OnClickListener() {
 
+            public void onClick(View v) {
+                senddata();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
+
     public void expand(int id){
         String s = getString(R.string.lost_activity);
         switch(id){
@@ -51,10 +74,6 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         }
     }
     public void onClick(View v){
-        whatf = (WhatFragment) getSupportFragmentManager().findFragmentById(R.id.whatFragment);
-        whenf = (WhenFragment) getSupportFragmentManager().findFragmentById(R.id.whenFragment);
-        wheref = (WhereFragment) getSupportFragmentManager().findFragmentById(R.id.whereFragment);
-
         switch (v.getId()){
             case R.id.whatfragmentButton:
                 expand(1);
@@ -65,7 +84,15 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
             case R.id.wherefragmentButton:
                expand(3);
             break;
-
         }
+    }
+
+    private void senddata() {
+        Log.d("Sender data...","not!");
+        String description = whatf.getDescription();
+        Bitmap thumbnail = whatf.getThumbnail();
+        Location location = wheref.getUserLocation();
+        whenf.requestData();
+       Item item = new Item(int id, description, location, int userid, int timestamp, List<String> tags, thumbnail);
     }
 }

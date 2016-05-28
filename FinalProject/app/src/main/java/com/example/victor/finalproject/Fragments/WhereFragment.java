@@ -1,17 +1,24 @@
 package com.example.victor.finalproject.Fragments;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.victor.finalproject.MainActivity;
 import com.example.victor.finalproject.R;
 import com.example.victor.finalproject.WhatWhenWhereInterface;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +31,13 @@ import com.example.victor.finalproject.WhatWhenWhereInterface;
 public class WhereFragment extends Fragment {
     private WhatWhenWhereInterface fragmentInterface;
     private View view;
+    private GoogleMap map;
+    private double userLatitude;
+    private double userLongitude;
+    private boolean userLocationKnown = false;
+    private boolean tracing = true;
+    private int mapType = GoogleMap.MAP_TYPE_NORMAL;
+
 
     public WhereFragment() {
         // Required empty public constructor
@@ -38,6 +52,18 @@ public class WhereFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent data = getIntent();
+        if(data.hasExtra(MainActivity.EXTRA_USER_LONGITUDE) && data.hasExtra(MainActivity.EXTRA_USER_LATITUDE)){
+
+            userLatitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LATITUDE, 0);
+            userLongitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LONGITUDE, 0);
+            if(userLatitude!=0 && userLongitude!=0) {
+                userLocationKnown = true;
+            }
+        }
+        zoomToUser();//gets location?
+        setUpMapIfNeeded();//what do?
     }
 
     @Override
@@ -51,36 +77,94 @@ public class WhereFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try{
+        try {
             fragmentInterface = (WhatWhenWhereInterface) activity;
         } catch (ClassCastException ex) {
             //Activity does not implement correct interface
             throw new ClassCastException(activity.toString() + " must implement WhatWhenWhereInterface");
         }
     }
-    public void expand(String s){
+
+    public void expand(String s) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if(s == "lost"){
+        if (s == "lost") {
             view = inflater.inflate(R.layout.where_lost_opened, null);
-        }else
-        {
+        } else {
             view = inflater.inflate(R.layout.where_found_opened, null);
         }
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
     }
-    public void compress(String s){
+
+    public void compress(String s) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_where, null);
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
     }
+
     @Override
     public void onDetach() {
         super.onDetach();
     }
 
+
+    public void requestData() {
+    }
+
+    //todo: return data
+    public Location getUserLocation() {
+        return null;
+    }
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                setUpMap();
+            }
+        }
+    }
+    private void setUpMap() {
+        if(userLocationKnown) {
+
+            if(!tracing && !showingExercises){
+                mMap.clear();   //if we are not tracking, remove the marker first
+            }
+            mMap.addMarker(new MarkerOptions().position(new LatLng(userLatitude, userLongitude)).title("You are here!"));
+        }
+    }
+
+    private void zoomToUser(){
+        if(userLocationKnown) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(userLatitude, userLongitude), 12));
+        } else {
+            Toast.makeText(getApplicationContext(), "User location unknown", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent data) {
+
+            //Toast.makeText(getApplicationContext(), "Got location update", Toast.LENGTH_SHORT).show();
+
+            if(data.hasExtra(MainActivity.EXTRA_USER_LONGITUDE) && data.hasExtra(MainActivity.EXTRA_USER_LATITUDE)){
+
+                userLatitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LATITUDE, 0);
+                userLongitude = data.getDoubleExtra(MainActivity.EXTRA_USER_LONGITUDE, 0);
+                if(userLatitude!=0 && userLongitude!=0) {
+                    userLocationKnown = true;
+                }
+            }
+            setUpMap();
+        }
+    };
 
 }

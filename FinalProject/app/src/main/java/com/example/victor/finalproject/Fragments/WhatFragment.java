@@ -3,6 +3,8 @@ package com.example.victor.finalproject.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -92,5 +94,12 @@ public class WhatFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
-
+    //todo: return data
+    public String getDescription() {
+        return null;
+    }
+    //todo: return data
+    public Bitmap getThumbnail() {
+        return null;
+    }
 }

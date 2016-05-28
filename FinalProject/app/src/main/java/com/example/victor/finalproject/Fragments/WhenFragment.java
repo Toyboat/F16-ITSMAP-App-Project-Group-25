@@ -85,4 +85,7 @@ public class WhenFragment extends Fragment {
         super.onDetach();
     }
 
+    public void requestData() {
+
+    }
 }
