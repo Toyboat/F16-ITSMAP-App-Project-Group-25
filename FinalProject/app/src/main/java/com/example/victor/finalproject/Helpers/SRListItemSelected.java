@@ -36,12 +36,14 @@ public class SRListItemSelected {
         TextView txtDescription;
         TextView txtTags;
         TextView txtTime;
+        TextView txtLocation;
         Button btnClick;
 
         thumbnail = (ImageView) view.findViewById(R.id.imgThumbnail);
         txtDescription = (TextView) view.findViewById(R.id.txtDescriptionFinal);
         txtTags = (TextView) view.findViewById(R.id.txtTags);
         txtTime = (TextView) view.findViewById(R.id.txtTime);
+        txtLocation = (TextView) view.findViewById(R.id.txtLocation);
         btnClick = (Button) view.findViewById(R.id.btnClick);
 
         if (item.thumbnail != null) {
@@ -57,6 +59,9 @@ public class SRListItemSelected {
         String formattedDate = sdf.format(date);
 
         txtTime.setText(formattedDate);
+
+        String locationText = String.format("Lat: %f; Lon: %f;",item.location.getLatitude(), item.location.getLongitude());
+        txtLocation.setText(locationText);
 
         final Item it = item;
         final Context cont = context;

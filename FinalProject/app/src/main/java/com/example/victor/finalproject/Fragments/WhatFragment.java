@@ -93,17 +93,23 @@ public class WhatFragment extends Fragment {
     }
 
     public void expand(String s){
-        lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
-        foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
+
+
+        //lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
+        //foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.editFoundDescriptionText);
         Log.d(moduleName,"expand();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(s == "lost"){
-            lostDescriptionEditor.setText(description.toString());
+
             view = inflater.inflate(R.layout.what_lost_opened, null);
+
+            lostDescriptionEditor = (EditText) view.findViewById(R.id.editLostDescriptionText);
+            lostDescriptionEditor.setText(description.toString());
 
         }else{
             //foundDescriptionEditor.setText(description.toString());
             view = inflater.inflate(R.layout.what_found_opened, null);
+            foundDescriptionEditor = (EditText) view.findViewById(R.id.ediFoundDescriptionText);
 
         }
         ViewGroup rootView = (ViewGroup) getView();
@@ -115,6 +121,10 @@ public class WhatFragment extends Fragment {
         Log.d(moduleName,"compress();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_what, null);
+
+        lostDescriptionEditor = null;
+        foundDescriptionEditor = null;
+
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
@@ -141,8 +151,18 @@ public class WhatFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
-        savedInstanceState.putString(SAVED_DESCRIPTION, lostDescriptionEditor.getText().toString());
-        savedInstanceState.putString(SAVED_DESCRIPTION, foundDescriptionEditor.getText().toString());
+        try {
+            savedInstanceState.putString(SAVED_DESCRIPTION, lostDescriptionEditor.getText().toString());
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        try {
+            savedInstanceState.putString(SAVED_DESCRIPTION, foundDescriptionEditor.getText().toString());
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
         savedInstanceState.putParcelable(SAVED_BITMAP, bitmap);
     }
 }

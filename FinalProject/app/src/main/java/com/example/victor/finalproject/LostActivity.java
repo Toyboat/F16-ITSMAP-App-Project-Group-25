@@ -67,7 +67,7 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         switch(id){
             case 1://expand what
                 this.whatf.expand(s);
-                this.whatf.lostDescriptionEditor.setText(inputLost);
+                //this.whatf.lostDescriptionEditor.setText(inputLost);
 
                 this.whenf.compress(s);
                 this.wheref.compress(s);
@@ -90,7 +90,7 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         switch (v.getId()){
             case R.id.whatfragmentButton:
                 expand(1);
-                inputLost = this.whatf.lostDescriptionEditor.getText().toString();
+                //inputLost = this.whatf.lostDescriptionEditor.getText().toString();
             break;
             case R.id.whenfragmentButton:
                 expand(2);
@@ -109,8 +109,11 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         this.whenf.requestData();
       // Item item = new Item(int id, description, location, int userid, int timestamp, List<String> tags, thumbnail);
     }
+
+    /** /
     public void onSaveInstanceState(Bundle savedInstanceState){
         //Save the fragment's instance
         savedInstanceState.putString(SAVED_LOST_DESC, inputLost);
     }
+     /**/
 }

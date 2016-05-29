@@ -2,16 +2,20 @@ package com.example.victor.finalproject;
 
 import android.app.FragmentManager;
 import android.content.res.Configuration;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
+import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Fragments.WhatFragment;
 import com.example.victor.finalproject.Fragments.WhenFragment;
 import com.example.victor.finalproject.Fragments.WhereFragment;
 
 public class FoundActivity extends AppCompatActivity  implements WhatWhenWhereInterface{
+    private static final String moduleName = "FoundActivity";
         private WhatWhenWhereInterface fragmentInterface;
         private WhatFragment whatf;
         private WhenFragment whenf;
@@ -25,8 +29,10 @@ public class FoundActivity extends AppCompatActivity  implements WhatWhenWhereIn
             //FragmentTransaction ft = fm.beginTransaction();
             Configuration config = getResources().getConfiguration();
 
+
         }
-        public void expand(int id){
+
+    public void expand(int id){
             String s = getString(R.string.found_activity);
             switch(id){
                 case 1://expand what

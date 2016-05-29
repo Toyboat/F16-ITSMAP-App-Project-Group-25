@@ -83,13 +83,13 @@ public class WhereFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(moduleName,"onCreate();");
-        super.onCreate(savedInstanceState);
 
+/*
 if (savedInstanceState != null) {
     if (savedInstanceState.containsKey(locationBundle)) {
         userLocation = Item.JSONLocationParse(savedInstanceState.getString(locationBundle));
     }
-}
+}*/
 
         populateLocationTextEdits();
 
@@ -109,6 +109,7 @@ if (savedInstanceState != null) {
 //        locationUpdateBroadcast(userLocation);
         Log.d("maps", "longandlat" + getLocation().toString());
         /**/
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -134,8 +135,9 @@ if (savedInstanceState != null) {
     @Override
     public void onPause() {
         Log.d(moduleName,"onPause();");
-        super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(locationUpdateReceiver);
+        super.onPause();
+
     }
 
 
@@ -169,6 +171,7 @@ if (savedInstanceState != null) {
             view = inflater.inflate(R.layout.where_found_opened, null);
         }
 
+
         txtLat = (EditText) view.findViewById(R.id.txtLat);
         txtLon = (EditText) view.findViewById(R.id.txtLon);
         txtRadius = (EditText) view.findViewById(R.id.txtRadius);
@@ -191,7 +194,13 @@ if (savedInstanceState != null) {
         rootView.addView(view);
     }
 
-    private Location getLocation() {
+    public void setLocation(Location location)
+    {
+        Log.d(moduleName,"setLocation();");
+        userLocation = location;
+    }
+
+    public Location getLocation() {
         Log.d(moduleName,"getLocation();");
         modUserLocation();
        /*
@@ -203,25 +212,35 @@ if (savedInstanceState != null) {
     }
     private void modUserLocation()
     {
+        if (userLocation == null)
+        {
+            userLocation = new Location("userlocation");
+            userLocation.setAccuracy(-1);
+        }
+
         if (txtLat != null) {
             try {
-                Location buffer = new Location("userlocation");
+                //Location buffer = new Location("userlocation");
 
                 userLocation.setLatitude(Double.parseDouble(txtLat.getText().toString()));
                 userLocation.setLongitude(Double.parseDouble(txtLon.getText().toString()));
                 userLocation.setAccuracy(Float.parseFloat(txtRadius.getText().toString()));
-                userLocation = buffer;
+
+                //userLocation = buffer;
             }catch(Exception e)
             {
                 e.printStackTrace();
             }
         }
-
     }
     public void compress(String s) {
+        modUserLocation();
+
         Log.d(moduleName,"compress();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        modUserLocation();
+
+
+
         txtLat = null;
         txtLon = null;
         txtRadius = null;
@@ -383,7 +402,9 @@ if (savedInstanceState != null) {
     private static final String locationBundle = "LOCBUND";
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Log.d(moduleName,"onSaveInstanceState();");
+
+
         modUserLocation();
         if (userLocation != null) {
             outState.putString(locationBundle,Item.JSONLocationGEN(userLocation));
@@ -393,6 +414,7 @@ if (savedInstanceState != null) {
             outState.putString(txtRadiusBundle, txtRadius.getText().toString());
             /**/
         }
+        super.onSaveInstanceState(outState);
 
     }
 
