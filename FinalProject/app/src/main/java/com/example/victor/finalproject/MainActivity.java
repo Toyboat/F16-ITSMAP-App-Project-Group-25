@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
                     long time = System.currentTimeMillis()/1000;
 
-                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, new ArrayList<String>(), newBitmap));
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), time, new ArrayList<String>(), newBitmap));
 
                 }
                 break;

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +69,7 @@ public class WhereFragment extends Fragment {
             }
         }
         //zoomToUser();//gets location?
-        //setUpMapIfNeeded();//what do?
+//        setUpMapIfNeeded();//what do?
         Log.d("maps","longandlat" + getLocation().toString());
     }
 
@@ -76,6 +78,18 @@ public class WhereFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_where, container, false);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(locationUpdateReceiver, new IntentFilter("LOCATION_UPDATE"));
+//        setUpMapIfNeeded();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(locationUpdateReceiver);
     }
 
 
@@ -137,8 +151,7 @@ public class WhereFragment extends Fragment {
         // Do a null check to confirm that we have not already instantiated the map.
         if (map == null) {
             // Try to obtain the map from the SupportMapFragment.
-            map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
+         //   map = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
             // Check if we were successful in obtaining the map.
             if (map != null) {
                 setUpMap();
@@ -160,7 +173,7 @@ public class WhereFragment extends Fragment {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(userLatitude, userLongitude), 12));
         } else {
-            Log.d("Error","User location unknown");
+            Log.d("Error","Unknown user location");
         }
     }
 
