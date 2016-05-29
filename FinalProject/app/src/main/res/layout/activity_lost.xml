@@ -5,6 +5,7 @@
     tools:context="com.example.victor.finalproject.LostActivity"
     android:weightSum="1.0"
     android:orientation="vertical"
+    android:id="@+id/lostLayout"
     >
 
     <fragment android:name="com.example.victor.finalproject.Fragments.WhatFragment"

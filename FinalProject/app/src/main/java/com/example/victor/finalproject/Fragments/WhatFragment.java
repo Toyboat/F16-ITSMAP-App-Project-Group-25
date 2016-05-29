@@ -38,8 +38,8 @@ public class WhatFragment extends Fragment {
     static final String SAVED_BITMAP = "savedBitmap";
     public String description;
     private Bitmap bitmap;
-    public EditText lostDescriptionEditor;
-    public EditText foundDescriptionEditor;
+    private EditText lostDescriptionEditor;
+    private EditText foundDescriptionEditor;
     private ImageView imageView;
 
     public WhatFragment() {
@@ -95,6 +95,7 @@ public class WhatFragment extends Fragment {
     public void expand(String s){
         lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
         foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
+
         Log.d(moduleName,"expand();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(s == "lost"){
@@ -118,6 +119,8 @@ public class WhatFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
+        lostDescriptionEditor = null;
+        foundDescriptionEditor = null;
     }
 
     @Override
@@ -144,5 +147,21 @@ public class WhatFragment extends Fragment {
         savedInstanceState.putString(SAVED_DESCRIPTION, lostDescriptionEditor.getText().toString());
         savedInstanceState.putString(SAVED_DESCRIPTION, foundDescriptionEditor.getText().toString());
         savedInstanceState.putParcelable(SAVED_BITMAP, bitmap);
+    }
+
+    public void textSetter(String s, String input) {
+
+        if(s == "lost"){
+            lostDescriptionEditor.setText(input);
+        }else{
+            foundDescriptionEditor.setText(input);
+        }
+    }
+    public String textGetter(String s){
+        if(s == "lost"){
+            return lostDescriptionEditor.getText().toString();
+        }else{
+            return foundDescriptionEditor.getText().toString();
+        }
     }
 }

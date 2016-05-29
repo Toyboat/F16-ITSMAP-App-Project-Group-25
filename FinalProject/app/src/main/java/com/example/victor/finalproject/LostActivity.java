@@ -9,11 +9,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Fragments.WhatFragment;
@@ -34,10 +36,12 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost);
-        inputLost = getString(R.string.description);
+
         FragmentManager fm = getFragmentManager();
         if(savedInstanceState != null){
 
+        }else{
+            inputLost = getString(R.string.description);
         }
 
         //FragmentTransaction ft = fm.beginTransaction();
@@ -66,13 +70,14 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         String s = getString(R.string.lost_activity);
         switch(id){
             case 1://expand what
-                this.whatf.expand(s);
-                this.whatf.lostDescriptionEditor.setText(inputLost);
+                whatf.expand(s);
+                whatf.textSetter("lost", inputLost);
 
                 this.whenf.compress(s);
                 this.wheref.compress(s);
             break;
             case 2: //expand when
+
                 this.whatf.compress(s);
                 this.whenf.expand(s);
                 this.wheref.compress(s);
@@ -90,7 +95,6 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
         switch (v.getId()){
             case R.id.whatfragmentButton:
                 expand(1);
-                inputLost = this.whatf.lostDescriptionEditor.getText().toString();
             break;
             case R.id.whenfragmentButton:
                 expand(2);
