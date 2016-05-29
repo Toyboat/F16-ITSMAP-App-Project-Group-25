@@ -22,7 +22,9 @@ import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Datacontainers.LocationSingleton;
 
 public class LostActivity extends Activity {
-    final static String CAPS_STRING = "refernaename";;
+    private static final String moduleName = "LostActivity";
+
+    final static String CAPS_STRING = "refernaename";
     private Button search;
     private Button cancel;
     private Button locater;
@@ -153,6 +155,8 @@ public class LostActivity extends Activity {
         lbcm.unregisterReceiver(locationUpdateReceiver);
 
     }
+
+    /**/
     private BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -162,6 +166,7 @@ public class LostActivity extends Activity {
             setLocation(userLocation);
         }
     };
+    /**/
 
     private void setLocation(Location l) {
         lonView.setText(Double.toString(l.getLongitude()));
@@ -186,5 +191,6 @@ public class LostActivity extends Activity {
         UnregisterBroadcastReceivers();
         super.onDestroy();
     }
+
 
 }

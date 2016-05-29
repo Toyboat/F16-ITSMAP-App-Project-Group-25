@@ -156,7 +156,7 @@ class ItemDBHelper
 			$lon = $location->lon;
 			$radius = $location->radius; //$radius must be in km
 			
-			$r_earth = doubleval(6378);
+			$r_earth = doubleval(6378000);
 			$pi = 3.14159265358979;
 			
 			$lat_min = $lat - ($radius / $r_earth) * (180 / $pi);
