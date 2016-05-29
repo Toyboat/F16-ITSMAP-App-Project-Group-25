@@ -353,6 +353,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        UnregisterBroadcastReceivers();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        SetupBroadcastReceivers();
+        super.onResume();
+    }
 
     //Broadcast Receiver decouple
 

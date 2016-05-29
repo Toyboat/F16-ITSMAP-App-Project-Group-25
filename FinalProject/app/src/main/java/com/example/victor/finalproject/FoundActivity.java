@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FoundActivity extends Activity {
+    private static final String moduleName = "FoundActivity";
+
     final static String SAVED_DESCRIPTION = "savedDescription";
     private Button search;
     private Button cancel;
@@ -48,6 +50,7 @@ public class FoundActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(moduleName,"onCreate();");
         userLocation = null;
         List<String> tags = new ArrayList<String>();
         tags.add("sort");
@@ -67,10 +70,12 @@ public class FoundActivity extends Activity {
         radView = (EditText) findViewById(R.id.txtRad);
         description = (EditText) findViewById(R.id.ediFoundDescriptionText);
         imageButton = (ImageView) findViewById(R.id.imageButton);
+
         search.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 senddata();
+
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +111,7 @@ public class FoundActivity extends Activity {
     }
 
     private boolean startTracking() {
+        Log.d(moduleName,"startTracking();");
         try {
             if (locationManager == null) {
                 locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -137,6 +143,7 @@ public class FoundActivity extends Activity {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
+            Log.d(moduleName,"onLocationChanged();");
             LocationSingleton.getInstance().setLocation(location);
 
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastLocationUpdateAction));
@@ -158,6 +165,7 @@ public class FoundActivity extends Activity {
         }
     };
     private boolean stopTracking(){
+        Log.d(moduleName,"stopTracking();");
         try {
             try{
                 locationManager.removeUpdates(locationListener);
@@ -175,13 +183,19 @@ public class FoundActivity extends Activity {
     }
     private void SetupBroadcastReceivers()
     {
+        Log.d(moduleName,"SetupBroadcastReceivers();");
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
         lbcm.registerReceiver(locationUpdateReceiver, new IntentFilter(ProjectConstants.BroadcastLocationUpdateAction));
+        lbcm.registerReceiver(uploadSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastUploadSuccessAction));
+        lbcm.registerReceiver(uploadFailReceiver, new IntentFilter(ProjectConstants.BroadcastUploadFailAction));
     }
 
     private void UnregisterBroadcastReceivers()
     {
+        Log.d(moduleName,"UnregisterBroadcastReceivers()");
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.unregisterReceiver(uploadSuccessReceiver);
+        lbcm.unregisterReceiver(uploadFailReceiver);
         lbcm.unregisterReceiver(locationUpdateReceiver);
 
     }
@@ -201,6 +215,7 @@ public class FoundActivity extends Activity {
             case THUMBNAIL:
                 if (resultCode == RESULT_OK)
                 {
+                    Log.d(moduleName,"onActivityResult(); THUMBNAIL OK");
                     Bundle extras = data.getExtras();
                     Bitmap tn = (Bitmap) extras.get("data");
                     int width = tn.getWidth();
@@ -212,8 +227,8 @@ public class FoundActivity extends Activity {
 
                     long time = System.currentTimeMillis()/1000;
 
-                    newBitmap = thumbnail;
-                    imageButton.setImageBitmap(newBitmap);
+                    thumbnail = newBitmap;
+                    imageButton.setImageBitmap(thumbnail);
                 }
                 break;
             default:
@@ -224,28 +239,68 @@ public class FoundActivity extends Activity {
     }
 
     private void showLocation(Location l) {
+        Log.d(moduleName,"showLocation();");
         lonView.setText(Double.toString(l.getLongitude()));
         latView.setText(Double.toString(l.getLatitude()));
         radView.setText(Float.toString(l.getAccuracy()));
 
     }
 
+    private void getLocationFromText()
+    {
+        try{
+            if (userLocation == null)
+            {
+                userLocation = new Location("userlocation");
+            }
+            userLocation.setLatitude(Double.parseDouble(latView.getText().toString()));
+            userLocation.setLongitude(Double.parseDouble(lonView.getText().toString()));
+            userLocation.setAccuracy(Float.parseFloat(radView.getText().toString()));
+
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
     private void senddata() {
+        Log.d(moduleName,"senddata();");
         //inserts dummy data: for :id, userId and timestamp
         int id = 01;
         int userId = 01;
         Long timestamp = System.currentTimeMillis()/1000;
-        Item item = new Item(id, description.getText().toString(), userLocation, userId, timestamp, tags, thumbnail);
-        ServerService.searchFor(this,item);
+        getLocationFromText();
+
+        Item item = new Item(id,"Placeholder Description"/*description.getText().toString()*/, userLocation, userId, timestamp, tags, thumbnail);
+        ServerService.storeItem(this,item);
     }
     public void onSaveInstanceState(Bundle savedInstanceState){
+        Log.d(moduleName,"onSaveInstanceState();");
         //Save the fragment's instance
-        savedInstanceState.putString(SAVED_DESCRIPTION, description.getText().toString());
+        //savedInstanceState.putString(SAVED_DESCRIPTION, description.getText().toString());
     }
     @Override
     protected void onDestroy() {
+        Log.d(moduleName,"onDestroy();");
         UnregisterBroadcastReceivers();
         super.onDestroy();
     }
 
+    private BroadcastReceiver uploadSuccessReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Successfully uploaded item refid:" + Integer.toString(intent.getIntExtra( ProjectConstants.BroadcastUploadRefid, -1 )),Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"uploadSuccessReceiver Received broadcast");
+
+        }
+    };
+
+    private BroadcastReceiver uploadFailReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Failed to upload item",Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"uploadFailReceiver Received broadcast");
+
+        }
+    };
 }

@@ -50,6 +50,7 @@ public class LostActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(moduleName,"onCreate();");
         userLocation = null;
         List<String> tags = new ArrayList<String>();
         tags.add("sort");
@@ -180,8 +181,10 @@ public class LostActivity extends Activity {
     private void SetupBroadcastReceivers()
     {
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        /**
         lbcm.registerReceiver(uploadSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastUploadSuccessAction));
         lbcm.registerReceiver(uploadFailReceiver, new IntentFilter(ProjectConstants.BroadcastUploadFailAction));
+         /**/
         lbcm.registerReceiver(searchSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsSuccessAction));
         lbcm.registerReceiver(searchFailReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsFailAction));
         lbcm.registerReceiver(locationUpdateReceiver, new IntentFilter(ProjectConstants.BroadcastLocationUpdateAction));
@@ -190,8 +193,10 @@ public class LostActivity extends Activity {
     private void UnregisterBroadcastReceivers()
     {
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        /**
         lbcm.unregisterReceiver(uploadSuccessReceiver);
         lbcm.unregisterReceiver(uploadFailReceiver);
+         /**/
         lbcm.unregisterReceiver(searchSuccessReceiver);
         lbcm.unregisterReceiver(searchFailReceiver);
         lbcm.unregisterReceiver(locationUpdateReceiver);
@@ -207,6 +212,8 @@ public class LostActivity extends Activity {
             showLocation(userLocation);
         }
     };
+
+    /**
     private BroadcastReceiver uploadSuccessReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -224,6 +231,7 @@ public class LostActivity extends Activity {
 
         }
     };
+     /**/
 
     private BroadcastReceiver searchSuccessReceiver = new BroadcastReceiver() {
         @Override
@@ -264,7 +272,7 @@ public class LostActivity extends Activity {
                     long time = System.currentTimeMillis()/1000;
 
                     thumbnail = newBitmap;
-                    imageButton.setImageBitmap(newBitmap);
+                    imageButton.setImageBitmap(thumbnail);
                 }
                 break;
             default:
@@ -281,17 +289,39 @@ public class LostActivity extends Activity {
 
     }
 
+    private void getLocationFromText()
+    {
+        try{
+            if (userLocation == null)
+            {
+                userLocation = new Location("userlocation");
+            }
+            userLocation.setLatitude(Double.parseDouble(latView.getText().toString()));
+            userLocation.setLongitude(Double.parseDouble(lonView.getText().toString()));
+            userLocation.setAccuracy(Float.parseFloat(radView.getText().toString()));
+
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
     private void senddata() {
+        Log.d(moduleName,"senddata();");
         //inserts dummy data: for :id, userId and timestamp
         int id = 01;
         int userId = 01;
         Long timestamp = System.currentTimeMillis()/1000;
-        Item item = new Item(id, description.getText().toString(), userLocation, userId, timestamp, tags, thumbnail);
-        ServerService.storeItem(this,item);
+        getLocationFromText();
+        Item item = new Item(id, "" /*description.getText().toString()*/, userLocation, userId, timestamp, tags, null/*thumbnail*/);
+        ServerService.searchFor(this,item);
     }
     public void onSaveInstanceState(Bundle savedInstanceState){
+        Log.d(moduleName,"onSaveInstanceState();");
+        super.onSaveInstanceState(savedInstanceState);
         //Save the fragment's instance
-        savedInstanceState.putString(SAVED_DESCRIPTION, description.getText().toString());
+        //savedInstanceState.putString(SAVED_DESCRIPTION, description.getText().toString());
     }
     @Override
     protected void onDestroy() {
