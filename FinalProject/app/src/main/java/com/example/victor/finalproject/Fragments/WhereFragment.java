@@ -68,10 +68,7 @@ public class WhereFragment extends Fragment {
         }
         //zoomToUser();//gets location?
         //setUpMapIfNeeded();//what do?
-<<<<<<< HEAD
-=======
         Log.d("maps","longandlat" + getLocation().toString());
->>>>>>> 705546672dad9a63d20bbf92bb08538476f82cad
     }
 
     @Override
