@@ -253,5 +253,4 @@ public class LostActivity extends Activity {
         super.onDestroy();
     }
 
-
 }
