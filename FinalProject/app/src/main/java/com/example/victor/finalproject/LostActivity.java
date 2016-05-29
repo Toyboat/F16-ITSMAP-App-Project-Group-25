@@ -28,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LostActivity extends Activity {
+
     final static String SAVED_DESCRIPTION = "savedDescription";
+    private static final String moduleName = "LostActivity";
     private Button search;
     private Button cancel;
     private Button locater;
@@ -185,6 +187,8 @@ public class LostActivity extends Activity {
         lbcm.unregisterReceiver(locationUpdateReceiver);
 
     }
+
+    /**/
     private BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -194,6 +198,7 @@ public class LostActivity extends Activity {
             showLocation(userLocation);
         }
     };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode)
@@ -247,5 +252,6 @@ public class LostActivity extends Activity {
         UnregisterBroadcastReceivers();
         super.onDestroy();
     }
+
 
 }

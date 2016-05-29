@@ -25,6 +25,8 @@ import com.example.victor.finalproject.Datacontainers.LocationSingleton;
 import com.example.victor.finalproject.Helpers.ServerService;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 //todo: implement "Login" via SharedPreferences - ask them to create a username at first login, then save the username locally and use it in this activity to say hello
@@ -159,9 +161,28 @@ public class MainActivity extends AppCompatActivity {
 
                     Bitmap newBitmap = Bitmap.createScaledBitmap(tn, (int)newWidth, (int)newHeight,false);
 
-                    long time = System.currentTimeMillis()/1000;
+                    List<String> tags = new ArrayList<String>();
 
-                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10,time, new ArrayList<String>(), newBitmap));
+                    Random rnd = new Random();
+                    int count = (int)rnd.nextInt(5);
+
+                    for (int k = 0; k < count; k++)
+                    {
+                        tags.add("Tag"+Integer.toString(rnd.nextInt(100)));
+                    }
+
+                    long time = System.currentTimeMillis()/1000;
+                    /**
+                    if (LocationSingleton.getInstance().getLocation() != null)
+                    {
+
+                    }else {
+                        /**/
+                Item it = new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, tags, null);
+                    Toast.makeText(getApplicationContext(),it.toJSONString(),Toast.LENGTH_LONG).show();
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, tags, newBitmap));
+                    //ServerService.storeItem(context, it);
+                    //}
 
                 }
                 break;
