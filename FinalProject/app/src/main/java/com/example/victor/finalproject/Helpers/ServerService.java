@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -125,6 +126,7 @@ public class ServerService extends IntentService {
             @Override
             public void onResponse(String response) {
                 Log.println(Log.DEBUG,"StringRequest","GOT: "+response);
+                Intent searchResultsIntent = new Intent();
                 try {
                     JSONArray arr = new JSONArray(response);
                     List<Item> items = new ArrayList<Item>();
@@ -134,17 +136,23 @@ public class ServerService extends IntentService {
                     }
                     //Item item = Item.fromJSONString(response);
                     ServerService.setResults(items);
+
+                    searchResultsIntent.setAction(ProjectConstants.BroadcastSearchResultsSuccessAction);
+
                 }catch(Exception e)
                 {
                     e.printStackTrace();
                     Log.println(Log.DEBUG,"StringRequest","Error: " +  response);
+                    searchResultsIntent.setAction(ProjectConstants.BroadcastSearchResultsFailAction);
                 }
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(searchResultsIntent);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.println(Log.DEBUG,"StringRequest","Error!");
                 error.printStackTrace();
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastSearchResultsFailAction));
             }
         });
         requestQueue.add(stringRequest);
@@ -223,13 +231,19 @@ public class ServerService extends IntentService {
             @Override
             public void onResponse(String response) {
                 Log.println(Log.DEBUG, "StringRequest", "GOT: " + response);
+                Intent uploadIntent = new Intent();
+
                 try {
                     JSONObject result = new JSONObject(response);
                     if (result.getBoolean("result")) {
                         refid = result.getInt("refid");
                         Log.println(Log.DEBUG, "StringRequest", "Upload success: " + response);
+                        uploadIntent.setAction(ProjectConstants.BroadcastUploadSuccessAction);
+                        uploadIntent.putExtra(ProjectConstants.BroadcastUploadRefid,refid);
                     } else {
                         Log.println(Log.DEBUG, "StringRequest", "Didn't upload: " + response);
+                        uploadIntent.setAction(ProjectConstants.BroadcastUploadFailAction);
+
 
                     }
 
@@ -238,13 +252,19 @@ public class ServerService extends IntentService {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.println(Log.DEBUG, "StringRequest", "Error: " + response);
+                    uploadIntent.setAction(ProjectConstants.BroadcastUploadFailAction);
+
                 }
+
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(uploadIntent);
+                //sendBroadcast(uploadIntent);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.println(Log.DEBUG, "StringRequest", "Error!");
                 error.printStackTrace();
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastUploadFailAction));
             }
         }) {
 
