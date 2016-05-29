@@ -216,21 +216,21 @@ public class WhereFragment extends Fragment {
 
     private void locationUpdateBroadcast(Location location) {
         Log.d(moduleName,"locationUpdateBroadcast();");
-
+        Log.d(moduleName,"new Intent();");
+        Intent update = new Intent(ProjectConstants.BroadcastLocationUpdateAction);
         if (location != null) {
-            Log.d(moduleName,"new Intent();");
-            Intent update = new Intent(ProjectConstants.BroadcastLocationUpdateAction);
+
             Log.d(moduleName, "getLatitude();");
             update.putExtra(USER_LATITUDE, location.getLatitude());
             Log.d(moduleName, "getLongitude();");
             update.putExtra(USER_LONGITUDE, location.getLongitude());
-            Log.d(moduleName,"sendBroadcast();");
-            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(update);
+
         }else
         {
             Log.d(moduleName,"location == null !!");
         }
-
+        Log.d(moduleName,"sendBroadcast();");
+        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(update);
     }
 
     BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {

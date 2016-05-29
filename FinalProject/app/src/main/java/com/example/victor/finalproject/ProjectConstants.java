@@ -13,5 +13,5 @@ public class ProjectConstants {
     public static final String BroadcastSearchResultsFailAction = "com.example.victor.finalproject.broadcast.actions.searcherror";
     public static final String BroadcastSearchResultsSuccessAction = "com.example.victor.finalproject.broadcast.actions.searchsuccess";
 
-    public static final String BroadcastLocationUpdateAction = "com.example.victor.finalproject.broadcast.actions.locationupdate";
+    public static final String BroadcastLocationUpdateAction = "LOCATION_UPDATE";//"com.example.victor.finalproject.broadcast.actions.locationupdate";
 }
