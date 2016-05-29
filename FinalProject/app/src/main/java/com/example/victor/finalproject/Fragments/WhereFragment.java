@@ -204,10 +204,17 @@ if (savedInstanceState != null) {
     private void modUserLocation()
     {
         if (txtLat != null) {
-            userLocation = new Location("userlocation");
-            userLocation.setLatitude(Double.parseDouble(txtLat.getText().toString()));
-            userLocation.setLongitude(Double.parseDouble(txtLon.getText().toString()));
-            userLocation.setAccuracy(Float.parseFloat(txtRadius.getText().toString()));
+            try {
+                Location buffer = new Location("userlocation");
+
+                userLocation.setLatitude(Double.parseDouble(txtLat.getText().toString()));
+                userLocation.setLongitude(Double.parseDouble(txtLon.getText().toString()));
+                userLocation.setAccuracy(Float.parseFloat(txtRadius.getText().toString()));
+                userLocation = buffer;
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
     }
