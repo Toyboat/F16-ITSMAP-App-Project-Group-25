@@ -139,7 +139,9 @@ public class LostActivity extends Activity {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
+            Log.d(moduleName,"onLocationChanged();");
             LocationSingleton.getInstance().setLocation(location);
+
 
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastLocationUpdateAction));
         }
@@ -178,14 +180,21 @@ public class LostActivity extends Activity {
     private void SetupBroadcastReceivers()
     {
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.registerReceiver(uploadSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastUploadSuccessAction));
+        lbcm.registerReceiver(uploadFailReceiver, new IntentFilter(ProjectConstants.BroadcastUploadFailAction));
+        lbcm.registerReceiver(searchSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsSuccessAction));
+        lbcm.registerReceiver(searchFailReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsFailAction));
         lbcm.registerReceiver(locationUpdateReceiver, new IntentFilter(ProjectConstants.BroadcastLocationUpdateAction));
     }
 
     private void UnregisterBroadcastReceivers()
     {
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.unregisterReceiver(uploadSuccessReceiver);
+        lbcm.unregisterReceiver(uploadFailReceiver);
+        lbcm.unregisterReceiver(searchSuccessReceiver);
+        lbcm.unregisterReceiver(searchFailReceiver);
         lbcm.unregisterReceiver(locationUpdateReceiver);
-
     }
 
     /**/
@@ -198,7 +207,44 @@ public class LostActivity extends Activity {
             showLocation(userLocation);
         }
     };
+    private BroadcastReceiver uploadSuccessReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Successfully uploaded item refid:" + Integer.toString(intent.getIntExtra( ProjectConstants.BroadcastUploadRefid, -1 )),Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"uploadSuccessReceiver Received broadcast");
 
+        }
+    };
+
+    private BroadcastReceiver uploadFailReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Failed to upload item",Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"uploadFailReceiver Received broadcast");
+
+        }
+    };
+
+    private BroadcastReceiver searchSuccessReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.println(Log.DEBUG,moduleName,"searchSuccessReceiver Received broadcast");
+
+            Intent toSearchResultsIntent = new Intent(context, SearchResultsActivity.class);
+            startActivity(toSearchResultsIntent);
+
+        }
+    };
+
+    private BroadcastReceiver searchFailReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Failed to retreive search results",Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"searchFailReceiver Received broadcast");
+
+        }
+    };
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode)
@@ -217,7 +263,7 @@ public class LostActivity extends Activity {
 
                     long time = System.currentTimeMillis()/1000;
 
-                    newBitmap = thumbnail;
+                    thumbnail = newBitmap;
                     imageButton.setImageBitmap(newBitmap);
                 }
                 break;
