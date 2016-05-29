@@ -1,5 +1,6 @@
 package com.example.victor.finalproject.Datacontainers;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -22,12 +23,13 @@ public class Item {
     public final int id;
     public final String description;
     public final Location location;
+
     //public final int userid;
-    public final int timestamp;
+    public final long timestamp;
     public final Bitmap thumbnail;
     public final List<String> tags;
 
-    public Item(int id, String description, Location location, int timestamp, List<String> tags, Bitmap thumbnail)
+    public Item(int id, String description, Location location, long timestamp, List<String> tags, Bitmap thumbnail)
     {
         this.id = id;
         this.description = description;
@@ -46,10 +48,11 @@ public class Item {
     public Location getLocation(){
         return this.location;
     }
-   // public int getUserId(){
+    //public int getUserId(){
     //    return this.userid;
     //}
-    public int getTimeStamp(){
+    public long getTimeStamp(){
+
         return this.timestamp;
     }
     public List<String> getTags(){
@@ -59,7 +62,7 @@ public class Item {
 
     public static Item getDummy()
     {
-        return new Item(0,"DummyDescription",new Location("Loco"),0,new ArrayList<String>(), null);
+        return new Item(0,"DummyDescription",new Location("Loco"), 0,new ArrayList<String>(), null);
     }
 
 
@@ -211,7 +214,7 @@ public class Item {
             //jObj.put(jsonUserID, i.userid);
             jObj.put(jsonTimeStamp,i.timestamp);
             jObj.put(jsonThumbnail,BitmapToBase64(i.thumbnail));
-            jObj.put(jsonTags,StringListToJson(i.tags));
+            jObj.put(jsonTags,new JSONArray(StringListToJson(i.tags)));
             result = jObj.toString();
         }catch(Exception e)
         {}
@@ -246,5 +249,27 @@ public class Item {
         return item;
 
 
+    }
+
+    private static final String intentItemKey = "EncodedJSONItem";
+
+    public static void EncodeToIntent(Intent intent, Item item)
+    {
+        intent.putExtra(intentItemKey,item.toJSONString());
+    }
+
+    public void EncodeToIntent(Intent intent)
+    {
+        EncodeToIntent(intent,this);
+    }
+
+    public static Item DecodeFromIntent(Intent intent)
+    {
+        if (intent.hasExtra(intentItemKey))
+        {
+            String itemJson = intent.getStringExtra(intentItemKey);
+            return Item.fromJSONString(itemJson);
+        }
+        return null;
     }
 }

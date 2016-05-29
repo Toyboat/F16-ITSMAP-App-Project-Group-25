@@ -7,6 +7,10 @@ import android.widget.TextView;
 import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by Jacob on 16/05/2016.
  */
@@ -30,6 +34,13 @@ public class SRListItem {
         }
         txtDescription.setText(item.description);
         txtTags.setText(item.tags.toString());
-        txtTime.setText(Integer.toString(item.timestamp));
+
+        long unixSeconds = item.timestamp;
+        Date date = new Date(unixSeconds*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z"); // the format of your date
+        sdf.setTimeZone(TimeZone.getDefault()); // give a timezone reference for formating (see comment at the bottom
+        String formattedDate = sdf.format(date);
+
+        txtTime.setText(formattedDate);
     }
 }

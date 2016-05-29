@@ -1,13 +1,17 @@
 package com.example.victor.finalproject;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 //todo: implement "Login" via SharedPreferences - ask them to create a username at first login, then save the username locally and use it in this activity to say hello
+    private static final String moduleName = "MainActivity";
+
     public final int THUMBNAIL = 667;
 
     private Button lostButton;
@@ -86,13 +92,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+/** /
+                    long time = System.currentTimeMillis()/1000;
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, new ArrayList<String>(), null));
+            /**/
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+
                 if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(cameraIntent, THUMBNAIL);
                 }else
                 {
                     Toast.makeText(MainActivity.this, "Image request denied!", Toast.LENGTH_LONG).show();
-                }}
+                }
+            /**/
+                }
                 catch(Exception e)
                 {
                     e.printStackTrace();
@@ -108,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(toSettingsIntent);
             }
         });
+
+        SetupBroadcastReceivers();
     }
 
     @Override
@@ -126,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
 
                     Bitmap newBitmap = Bitmap.createScaledBitmap(tn, (int)newWidth, (int)newHeight,false);
 
-                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, new ArrayList<String>(), newBitmap));
+                    long time = System.currentTimeMillis()/1000;
+
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, new ArrayList<String>(), newBitmap));
 
                 }
                 break;
@@ -135,5 +153,69 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void SetupBroadcastReceivers()
+    {
+        LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.registerReceiver(uploadSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastUploadSuccessAction));
+        lbcm.registerReceiver(uploadFailReceiver, new IntentFilter(ProjectConstants.BroadcastUploadFailAction));
+        lbcm.registerReceiver(searchSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsSuccessAction));
+        lbcm.registerReceiver(searchFailReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsFailAction));
+    }
+
+    private void UnregisterBroadcastReceivers()
+    {
+        LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.unregisterReceiver(uploadSuccessReceiver);
+        lbcm.unregisterReceiver(uploadFailReceiver);
+        lbcm.unregisterReceiver(searchSuccessReceiver);
+        lbcm.unregisterReceiver(searchFailReceiver);
+
+    }
+
+    private BroadcastReceiver uploadSuccessReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Successfully uploaded item refid:" + Integer.toString(intent.getIntExtra( ProjectConstants.BroadcastUploadRefid, -1 )),Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"uploadSuccessReceiver Received broadcast");
+
+        }
+    };
+
+    private BroadcastReceiver uploadFailReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Failed to upload item",Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"uploadFailReceiver Received broadcast");
+
+        }
+    };
+
+    private BroadcastReceiver searchSuccessReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.println(Log.DEBUG,moduleName,"searchSuccessReceiver Received broadcast");
+
+            Intent toSearchResultsIntent = new Intent(context, SearchResultsActivity.class);
+            startActivity(toSearchResultsIntent);
+
+        }
+    };
+
+    private BroadcastReceiver searchFailReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"Failed to retreive search results",Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"searchFailReceiver Received broadcast");
+
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        UnregisterBroadcastReceivers();
+        super.onDestroy();
     }
 }

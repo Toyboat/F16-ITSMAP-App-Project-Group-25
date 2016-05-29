@@ -1,5 +1,6 @@
 package com.example.victor.finalproject.Helpers;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Datacontainers.SearchResultsSingleton;
+import com.example.victor.finalproject.Datacontainers.VolleyQueueInstance;
 import com.example.victor.finalproject.ProjectConstants;
 import com.example.victor.finalproject.R;
 
@@ -31,12 +34,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ServerService extends Service {
+public class ServerService extends IntentService {
     //todo: implement server and connect
+
+    private static final String moduleName = "ServerService";
+
     public ServerService() {
+        super("IntentService");
     }
 
 
+/*
     private final IBinder binder = new LocalBinder();
 
     public class LocalBinder extends Binder {
@@ -49,11 +57,59 @@ public class ServerService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
+*/
+
+    private static final String ACTION_SEARCH = "searchAction";
+    private static final String ACTION_UPLOAD = "uploadAction";
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        String action = intent.getAction();
+        Log.println(Log.DEBUG,moduleName,"onHandleIntent()");
+
+        if (action == ACTION_SEARCH)
+        {
+            Log.println(Log.DEBUG,moduleName,"onHandleIntent() => ACTION_SEARCH");
+            Item i = Item.DecodeFromIntent(intent);
+            if (i != null)
+            {
+                searchFor(i);
+            }
+        }
+        else if (action == ACTION_UPLOAD)
+        {
+            Log.println(Log.DEBUG,moduleName,"onHandleIntent() => ACTION_UPLOAD");
+            Item i = Item.DecodeFromIntent(intent);
+            if (i != null)
+            {
+                storeItem(i);
+            }
+        }
+    }
+    //Implementing this as an Intent Service instead
+
+    public static void searchFor(Context context, Item i)
+    {
+        Intent intent = new Intent(context,ServerService.class);
+        intent.setAction(ACTION_SEARCH);
+        i.EncodeToIntent(intent);
+        context.startService(intent);
+
+    }
+    public static void storeItem(Context context, Item i) {
+        Intent intent = new Intent(context,ServerService.class);
+        intent.setAction(ACTION_UPLOAD);
+        i.EncodeToIntent(intent);
+        context.startService(intent);
+
+    }
 
     //public static void searchFor(Item i)
-    public static void searchFor(Context context,Item i)
+    public void searchFor(Item i)
     {
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = VolleyQueueInstance.getInstance().getRequestQueue();
+        Context context = getApplicationContext();
+
         SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
         String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress,context.getString(R.string.server_address));
 
@@ -70,6 +126,7 @@ public class ServerService extends Service {
             @Override
             public void onResponse(String response) {
                 Log.println(Log.DEBUG,"StringRequest","GOT: "+response);
+                Intent searchResultsIntent = new Intent();
                 try {
                     JSONArray arr = new JSONArray(response);
                     List<Item> items = new ArrayList<Item>();
@@ -79,17 +136,23 @@ public class ServerService extends Service {
                     }
                     //Item item = Item.fromJSONString(response);
                     ServerService.setResults(items);
+
+                    searchResultsIntent.setAction(ProjectConstants.BroadcastSearchResultsSuccessAction);
+
                 }catch(Exception e)
                 {
                     e.printStackTrace();
                     Log.println(Log.DEBUG,"StringRequest","Error: " +  response);
+                    searchResultsIntent.setAction(ProjectConstants.BroadcastSearchResultsFailAction);
                 }
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(searchResultsIntent);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.println(Log.DEBUG,"StringRequest","Error!");
                 error.printStackTrace();
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastSearchResultsFailAction));
             }
         });
         requestQueue.add(stringRequest);
@@ -103,6 +166,8 @@ public class ServerService extends Service {
     {
         SearchResultsSingleton.getInstance().setSearchResults(items);
     }
+
+
 
     public static List<Item> getResults(){
         //TODO: getDataFromServer
@@ -141,9 +206,10 @@ public class ServerService extends Service {
     }
 
 
-    public static int storeItem(Context context,Item i) {
+    public void storeItem(Item i) {
         //TODO: store data on server
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = VolleyQueueInstance.getInstance().getRequestQueue();
+        Context context = getApplicationContext();
 
         SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
         String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress, context.getString(R.string.server_address));
@@ -165,13 +231,19 @@ public class ServerService extends Service {
             @Override
             public void onResponse(String response) {
                 Log.println(Log.DEBUG, "StringRequest", "GOT: " + response);
+                Intent uploadIntent = new Intent();
+
                 try {
                     JSONObject result = new JSONObject(response);
                     if (result.getBoolean("result")) {
                         refid = result.getInt("refid");
                         Log.println(Log.DEBUG, "StringRequest", "Upload success: " + response);
+                        uploadIntent.setAction(ProjectConstants.BroadcastUploadSuccessAction);
+                        uploadIntent.putExtra(ProjectConstants.BroadcastUploadRefid,refid);
                     } else {
                         Log.println(Log.DEBUG, "StringRequest", "Didn't upload: " + response);
+                        uploadIntent.setAction(ProjectConstants.BroadcastUploadFailAction);
+
 
                     }
 
@@ -180,13 +252,19 @@ public class ServerService extends Service {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.println(Log.DEBUG, "StringRequest", "Error: " + response);
+                    uploadIntent.setAction(ProjectConstants.BroadcastUploadFailAction);
+
                 }
+
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(uploadIntent);
+                //sendBroadcast(uploadIntent);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.println(Log.DEBUG, "StringRequest", "Error!");
                 error.printStackTrace();
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastUploadFailAction));
             }
         }) {
 
@@ -195,6 +273,7 @@ public class ServerService extends Service {
             {
             Map<String, String> params = new HashMap<String, String>();
             params.put("jsonItem", itemJson);
+                Log.d("upload",itemJson);
             return params;
         }
 
@@ -207,6 +286,6 @@ public class ServerService extends Service {
     };
         requestQueue.add(stringRequest);
 
-        return 0;
+        //return 0;
     }
 }
