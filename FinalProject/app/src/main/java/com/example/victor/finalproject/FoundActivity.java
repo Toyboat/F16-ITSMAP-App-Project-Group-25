@@ -68,7 +68,7 @@ public class FoundActivity extends Activity {
         latView = (EditText) findViewById(R.id.txtLat);
         lonView = (EditText) findViewById(R.id.txtLon);
         radView = (EditText) findViewById(R.id.txtRad);
-        description = (EditText) findViewById(R.id.ediFoundDescriptionText);
+        description = (EditText) findViewById(R.id.editFoundDescriptionText);
         imageButton = (ImageView) findViewById(R.id.imageButton);
 
         search.setOnClickListener(new View.OnClickListener() {
