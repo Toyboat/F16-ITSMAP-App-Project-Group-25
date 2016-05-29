@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.victor.finalproject.MainActivity;
+import com.example.victor.finalproject.ProjectConstants;
 import com.example.victor.finalproject.R;
 import com.example.victor.finalproject.WhatWhenWhereInterface;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,6 +39,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * create an instance of this fragment.
  */
 public class WhereFragment extends Fragment {
+
+    private static final String moduleName = "WhereFragment";
+
     private WhatWhenWhereInterface fragmentInterface;
     private View view;
     private GoogleMap map;
@@ -53,10 +57,12 @@ public class WhereFragment extends Fragment {
     private LocationManager locationManager;
 
     public WhereFragment() {
+        Log.d(moduleName,"Constructor();");
         // Required empty public constructor
     }
 
     public static WhereFragment newInstance() {
+        Log.d(moduleName,"newInstance");
         WhereFragment fragment = new WhereFragment();
         Bundle args = new Bundle();
         return fragment;
@@ -64,7 +70,10 @@ public class WhereFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(moduleName,"onCreate();");
         super.onCreate(savedInstanceState);
+
+
 
         Intent data = getActivity().getIntent();
         if (data.hasExtra(USER_LONGITUDE) && data.hasExtra(USER_LATITUDE)) {
@@ -85,18 +94,25 @@ public class WhereFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_where, container, false);
+        Log.d(moduleName,"onCreateView();");
+        View view;
+
+        view = inflater.inflate(R.layout.fragment_where, container, false);
+
+        return view;
     }
 
     @Override
     public void onResume() {
+        Log.d(moduleName,"onResume();");
         super.onResume();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(locationUpdateReceiver, new IntentFilter("LOCATION_UPDATE"));
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(locationUpdateReceiver, new IntentFilter(ProjectConstants.BroadcastLocationUpdateAction));
 //        setUpMapIfNeeded();
     }
 
     @Override
     public void onPause() {
+        Log.d(moduleName,"onPause();");
         super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(locationUpdateReceiver);
     }
@@ -104,6 +120,7 @@ public class WhereFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d(moduleName,"onAttach();");
         super.onAttach(activity);
         try {
             fragmentInterface = (WhatWhenWhereInterface) activity;
@@ -114,6 +131,7 @@ public class WhereFragment extends Fragment {
     }
 
     public void expand(String s) {
+        Log.d(moduleName,"expand();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (s == "lost") {
             Log.d("pre.maps", "longandlat" + getLocation().toString());
@@ -129,6 +147,7 @@ public class WhereFragment extends Fragment {
     }
 
     private Location getLocation() {
+        Log.d(moduleName,"getLocation();");
         Location l = new Location("currentLocation");
         l.setLatitude(userLatitude);
         l.setLongitude(userLongitude);
@@ -136,6 +155,7 @@ public class WhereFragment extends Fragment {
     }
 
     public void compress(String s) {
+        Log.d(moduleName,"compress();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_where, null);
         ViewGroup rootView = (ViewGroup) getView();
@@ -145,19 +165,23 @@ public class WhereFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        Log.d(moduleName,"onDetach();");
         super.onDetach();
     }
 
 
     public void requestData() {
+        Log.d(moduleName,"requestData();");
     }
 
     //todo: return data
     public Location getUserLocation() {
+        Log.d(moduleName,"getUserLocation();");
         return null;
     }
 
     private void setUpMapIfNeeded() {
+        Log.d(moduleName,"setUpMapIfNeeded();");
         // Do a null check to confirm that we have not already instantiated the map.
         if (map == null) {
             // Try to obtain the map from the SupportMapFragment.
@@ -170,6 +194,7 @@ public class WhereFragment extends Fragment {
     }
 
     private void setUpMap() {
+        Log.d(moduleName,"setUpMap();");
         if (userLocationKnown) {
 
             if (!tracing) {
@@ -180,6 +205,7 @@ public class WhereFragment extends Fragment {
     }
 
     private void zoomToUser() {
+        Log.d(moduleName,"zoomToUser();");
         if (userLocationKnown) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(userLatitude, userLongitude), 12));
@@ -189,17 +215,28 @@ public class WhereFragment extends Fragment {
     }
 
     private void locationUpdateBroadcast(Location location) {
+        Log.d(moduleName,"locationUpdateBroadcast();");
 
-        Intent update = new Intent("LOCATION_UPDATE");
-        update.putExtra(USER_LATITUDE, location.getLatitude());
-        update.putExtra(USER_LONGITUDE, location.getLongitude());
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(update);
+        if (location != null) {
+            Log.d(moduleName,"new Intent();");
+            Intent update = new Intent(ProjectConstants.BroadcastLocationUpdateAction);
+            Log.d(moduleName, "getLatitude();");
+            update.putExtra(USER_LATITUDE, location.getLatitude());
+            Log.d(moduleName, "getLongitude();");
+            update.putExtra(USER_LONGITUDE, location.getLongitude());
+            Log.d(moduleName,"sendBroadcast();");
+            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(update);
+        }else
+        {
+            Log.d(moduleName,"location == null !!");
+        }
 
     }
 
     BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent data) {
+            Log.d("locationUpdateReceiver","onReceive();");
 
             //Toast.makeText(getApplicationContext(), "Got location update", Toast.LENGTH_SHORT).show();
 
@@ -216,6 +253,7 @@ public class WhereFragment extends Fragment {
     };
 
     private void updateStatus() {
+        Log.d(moduleName,"updateStatus();");
         String status = "";
         if (userLocation != null) {
             status += " location=known";
@@ -261,7 +299,7 @@ public class WhereFragment extends Fragment {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-
+            Log.d("locationListener","onLocationChanged();");
             userLocation = location;
             updateStatus();
             locationUpdateBroadcast(location);
@@ -269,17 +307,17 @@ public class WhereFragment extends Fragment {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-
+            Log.d("locationListener","onStatusChanged();");
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-
+            Log.d("locationListener","onProviderEnabled();");
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-
+            Log.d("locationListener","onProviderDisabled();");
         }
     };
 }
