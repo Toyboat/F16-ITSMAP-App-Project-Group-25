@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,13 @@ public class WhatFragment extends Fragment {
     private WhatWhenWhereInterface fragmentInterface;
     private TextView what;
     private View view;
+    static final String SAVED_DESCRIPTION = "savedDescription";
+    static final String SAVED_BITMAP = "savedBitmap";
+    public String description;
+    private Bitmap bitmap;
+    public EditText lostDescriptionEditor;
+    public EditText foundDescriptionEditor;
+    private ImageView imageView;
 
     public WhatFragment() {
         // Required empty public constructor
@@ -44,12 +53,20 @@ public class WhatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
+        foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
+       //todo: bitmap = (Bitmap)
+        if(savedInstanceState != null){
+            description = savedInstanceState.getString("savedDescription");
+            bitmap = savedInstanceState.getParcelable("savedBitmap");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_what, container, false);
+        lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
+        foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
         return view;
     }
 
@@ -72,13 +89,18 @@ public class WhatFragment extends Fragment {
     public void expand(String s){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(s == "lost"){
+            lostDescriptionEditor.setText(description.toString());
             view = inflater.inflate(R.layout.what_lost_opened, null);
+
         }else{
+            //foundDescriptionEditor.setText(description.toString());
             view = inflater.inflate(R.layout.what_found_opened, null);
+
         }
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
+
     }
     public void compress(String s){
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -99,5 +121,12 @@ public class WhatFragment extends Fragment {
     //todo: return data
     public Bitmap getThumbnail() {
         return null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        savedInstanceState.putString(SAVED_DESCRIPTION, lostDescriptionEditor.getText().toString());
+        savedInstanceState.putString(SAVED_DESCRIPTION, foundDescriptionEditor.getText().toString());
+        savedInstanceState.putParcelable(SAVED_BITMAP, bitmap);
     }
 }

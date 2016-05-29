@@ -77,7 +77,7 @@ public class WhereFragment extends Fragment {
         }
         //zoomToUser();//gets location?
 //        setUpMapIfNeeded();//what do?
-        locationUpdateBroadcast(userLocation);
+//        locationUpdateBroadcast(userLocation);
         Log.d("maps", "longandlat" + getLocation().toString());
     }
 
