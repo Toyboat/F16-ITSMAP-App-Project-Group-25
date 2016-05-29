@@ -29,6 +29,8 @@ import com.example.victor.finalproject.WhatWhenWhereInterface;
  * create an instance of this fragment.
  */
 public class WhatFragment extends Fragment {
+    private static final String moduleName = "WhatFragment";
+
     private WhatWhenWhereInterface fragmentInterface;
     private TextView what;
     private View view;
@@ -42,8 +44,10 @@ public class WhatFragment extends Fragment {
 
     public WhatFragment() {
         // Required empty public constructor
+        Log.d(moduleName,"Constructor();");
     }
     public static WhatFragment newInstance() {
+        Log.d(moduleName,"newInstance();");
         WhatFragment fragment = new WhatFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -52,9 +56,8 @@ public class WhatFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(moduleName,"onCreate();");
         super.onCreate(savedInstanceState);
-        lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
-        foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
        //todo: bitmap = (Bitmap)
         if(savedInstanceState != null){
             description = savedInstanceState.getString("savedDescription");
@@ -64,14 +67,16 @@ public class WhatFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Log.d(moduleName,"onCreateView();");
         view = inflater.inflate(R.layout.fragment_what, container, false);
-        lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
-        foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
+
         return view;
     }
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d(moduleName,"onAttach();");
         super.onAttach(activity);
         try{
             fragmentInterface = (WhatWhenWhereInterface) activity;
@@ -81,12 +86,16 @@ public class WhatFragment extends Fragment {
         }
     }
     public void onClick() {
+        Log.d(moduleName,"onClick();");
         Log.d("OnClickListener", "Clicked!");
         Toast toast = Toast.makeText(getContext(), "Clicked!", Toast.LENGTH_SHORT);
         toast.show();
     }
 
     public void expand(String s){
+        lostDescriptionEditor = (EditText) getActivity().findViewById(R.id.editLostDescriptionText);
+        foundDescriptionEditor =  (EditText) getActivity().findViewById(R.id.ediFoundDescriptionText);
+        Log.d(moduleName,"expand();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(s == "lost"){
             lostDescriptionEditor.setText(description.toString());
@@ -103,6 +112,7 @@ public class WhatFragment extends Fragment {
 
     }
     public void compress(String s){
+        Log.d(moduleName,"compress();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_what, null);
         ViewGroup rootView = (ViewGroup) getView();
@@ -112,14 +122,20 @@ public class WhatFragment extends Fragment {
 
     @Override
     public void onDetach() {
+
+        Log.d(moduleName,"onDetach()");
         super.onDetach();
     }
     //todo: return data
     public String getDescription() {
+        Log.d(moduleName,"getDescription();");
+
         return null;
     }
     //todo: return data
     public Bitmap getThumbnail() {
+        Log.d(moduleName,"getThumbnail();");
+
         return null;
     }
 

@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
@@ -17,6 +21,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.victor.finalproject.Datacontainers.Item;
+import com.example.victor.finalproject.Datacontainers.LocationSingleton;
 import com.example.victor.finalproject.Helpers.ServerService;
 
 import java.util.ArrayList;
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private Button requestButton;
     private Button uploadButton;
     private Button settingsButton;
+    private Button getlocationButton;
+
     private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         requestButton = (Button) findViewById(R.id.btnRequest);
         uploadButton = (Button) findViewById(R.id.btnUpload);
         settingsButton  = (Button) findViewById(R.id.btnSettings);
+
+        getlocationButton = (Button) findViewById(R.id.btnLocation);
 
         lostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
                 //ServerService a = new ServerService();
                 //public Item(int id, String description, Location location, int userid, int timestamp, List<String> tags, Bitmap thumbnail)
 
-                ServerService.searchFor(context, new Item(10, "", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, new ArrayList<String>(), null));
+                ServerService.searchFor(context, new Item(10, "", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, 0, new ArrayList<String>(), null));
+                                                 //new Item(10, "", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, new ArrayList<String>(), null);
             }
         });
 
@@ -123,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        getlocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTracking();
+            }
+        });
+
         SetupBroadcastReceivers();
     }
 
@@ -144,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
                     long time = System.currentTimeMillis()/1000;
 
-                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), time, new ArrayList<String>(), newBitmap));
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10,time, new ArrayList<String>(), newBitmap));
 
                 }
                 break;
@@ -162,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         lbcm.registerReceiver(uploadFailReceiver, new IntentFilter(ProjectConstants.BroadcastUploadFailAction));
         lbcm.registerReceiver(searchSuccessReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsSuccessAction));
         lbcm.registerReceiver(searchFailReceiver, new IntentFilter(ProjectConstants.BroadcastSearchResultsFailAction));
+        lbcm.registerReceiver(locationUpdateReceiver, new IntentFilter(ProjectConstants.BroadcastLocationUpdateAction));
     }
 
     private void UnregisterBroadcastReceivers()
@@ -171,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         lbcm.unregisterReceiver(uploadFailReceiver);
         lbcm.unregisterReceiver(searchSuccessReceiver);
         lbcm.unregisterReceiver(searchFailReceiver);
+        lbcm.unregisterReceiver(locationUpdateReceiver);
 
     }
 
@@ -212,6 +231,109 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+
+
+
+    //LOCATION STUFF....
+
+    private BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"locationUpdateReceiver got "+Item.JSONLocationGEN(LocationSingleton.getInstance().getLocation()),Toast.LENGTH_SHORT).show();
+            Log.println(Log.DEBUG,moduleName,"locationUpdateReceiver Received broadcast");
+            stopTracking();
+
+        }
+    };
+
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d(moduleName,"onLocationChanged();");
+            LocationSingleton.getInstance().setLocation(location);
+            //userLocation = location;
+            //updateStatus();'
+
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastLocationUpdateAction));
+            //broadcastLocationUpdate(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    private LocationManager locationManager;
+    private static final long MIN_TIME_BETWEEN_LOCATION_UPDATES = 5 * 1000;    // milisecs
+    private static final float MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES = 1;  // meter
+    private boolean isTracking = false;
+
+    private boolean startTracking(){
+        Log.d(moduleName,"startTracking();");
+        try {
+            if (locationManager == null) {
+                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            }
+
+            long minTime = MIN_TIME_BETWEEN_LOCATION_UPDATES;
+            float minDistance = MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES;
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+
+            if (locationManager != null) {
+                try {
+                    //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, locationListener);         //for specifying GPS provider
+                    //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, locationListener);     //for specifying Network provider
+                    locationManager.requestLocationUpdates(minTime, minDistance, criteria, locationListener, null);
+                    //Use criteria to chose best provider
+                } catch (SecurityException ex) {
+                    //TODO: user have disabled location permission - need to validate this permission for newer versions
+                }
+            } else {
+                return false;
+            }
+            isTracking = true;
+            return true;
+        } catch (Exception ex) {
+            //things can go wrong
+            Log.e("TRACKER", "Error during start", ex);
+            return false;
+        }
+    }
+
+    private boolean stopTracking(){
+        Log.d(moduleName,"stopTracking();");
+        try {
+            try{
+                locationManager.removeUpdates(locationListener);
+                isTracking = false;
+            } catch (SecurityException ex) {
+                //TODO: user have disabled location permission - need to validate this permission for newer versions
+            }
+
+            return true;
+        } catch (Exception ex) {
+            //things can go wrong here as well (listener is null)
+            Log.e("TRACKER", "Error during stop", ex);
+            return false;
+        }
+    }
+
+
+    //Broadcast Receiver decouple
 
     @Override
     protected void onDestroy() {

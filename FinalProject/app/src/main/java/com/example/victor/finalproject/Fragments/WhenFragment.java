@@ -22,16 +22,20 @@ import com.example.victor.finalproject.WhatWhenWhereInterface;
  * create an instance of this fragment.
  */
 public class WhenFragment extends Fragment {
+    private static final String moduleName = "WhenFragment";
+
     private WhatWhenWhereInterface fragmentInterface;
     private View view;
 
 
     public WhenFragment() {
+        Log.d(moduleName,"Constructor();");
         // Required empty public constructor
     }
 
 
     public static WhenFragment newInstance() {
+        Log.d(moduleName,"newInstance();");
         WhenFragment fragment = new WhenFragment();
         Bundle args = new Bundle();
 
@@ -40,6 +44,7 @@ public class WhenFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(moduleName,"onCreate();");
         super.onCreate(savedInstanceState);
 
     }
@@ -47,13 +52,21 @@ public class WhenFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(moduleName,"onCreateView();");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_when, container, false);
+        View view;
+
+
+        view = inflater.inflate(R.layout.fragment_when, container, false);
+
+
+        return view;
     }
 
 
     @Override
     public void onAttach(Activity activity) {
+        Log.d(moduleName,"onAttach();");
         super.onAttach(activity);
         try{
             fragmentInterface = (WhatWhenWhereInterface) activity;
@@ -63,6 +76,7 @@ public class WhenFragment extends Fragment {
         }
     }
     public void expand(String s){
+        Log.d(moduleName,"expand();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if(s == "lost"){
             view = inflater.inflate(R.layout.when_lost_opened, null);
@@ -74,6 +88,7 @@ public class WhenFragment extends Fragment {
         rootView.addView(view);
     }
     public void compress(String s){
+        Log.d(moduleName,"compress();");
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.fragment_when, null);
         ViewGroup rootView = (ViewGroup) getView();
@@ -82,10 +97,12 @@ public class WhenFragment extends Fragment {
     }
     @Override
     public void onDetach() {
+
+        Log.d(moduleName,"onDetach();");
         super.onDetach();
     }
 
     public void requestData() {
-
+        Log.d(moduleName,"requestData();");
     }
 }
