@@ -212,7 +212,7 @@ public class Item {
             jObj.put(jsonUserID, i.userid);
             jObj.put(jsonTimeStamp,i.timestamp);
             jObj.put(jsonThumbnail,BitmapToBase64(i.thumbnail));
-            jObj.put(jsonTags,StringListToJson(i.tags));
+            jObj.put(jsonTags,new JSONArray(StringListToJson(i.tags)));
             result = jObj.toString();
         }catch(Exception e)
         {}

@@ -92,13 +92,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+/** /
+                    long time = System.currentTimeMillis()/1000;
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, time, new ArrayList<String>(), null));
+            /**/
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+
                 if (cameraIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(cameraIntent, THUMBNAIL);
                 }else
                 {
                     Toast.makeText(MainActivity.this, "Image request denied!", Toast.LENGTH_LONG).show();
-                }}
+                }
+            /**/
+                }
                 catch(Exception e)
                 {
                     e.printStackTrace();
@@ -169,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver uploadSuccessReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Toast.makeText(context,"Successfully uploaded item refid:" + Integer.toString(intent.getIntExtra( ProjectConstants.BroadcastUploadRefid, -1 )),Toast.LENGTH_SHORT).show();
             Log.println(Log.DEBUG,moduleName,"uploadSuccessReceiver Received broadcast");
 
         }
@@ -178,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver uploadFailReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Toast.makeText(context,"Failed to upload item",Toast.LENGTH_SHORT).show();
             Log.println(Log.DEBUG,moduleName,"uploadFailReceiver Received broadcast");
 
         }
@@ -199,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver searchFailReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            Toast.makeText(context,"Failed to retreive search results",Toast.LENGTH_SHORT).show();
             Log.println(Log.DEBUG,moduleName,"searchFailReceiver Received broadcast");
 
         }

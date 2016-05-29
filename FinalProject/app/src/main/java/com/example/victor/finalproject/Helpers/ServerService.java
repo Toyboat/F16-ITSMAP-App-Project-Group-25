@@ -273,6 +273,7 @@ public class ServerService extends IntentService {
             {
             Map<String, String> params = new HashMap<String, String>();
             params.put("jsonItem", itemJson);
+                Log.d("upload",itemJson);
             return params;
         }
 
