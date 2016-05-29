@@ -7,27 +7,98 @@
     android:orientation="vertical"
     android:id="@+id/lostLayout"
     >
-
-    <fragment android:name="com.example.victor.finalproject.Fragments.WhatFragment"
-        android:id="@+id/whatFragment"
-        android:layout_width="match_parent"
-        android:layout_weight=".3"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_weight="0.3"
+        android:weightSum="2">
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:text="Title" />
 
-    <fragment android:name="com.example.victor.finalproject.Fragments.WhenFragment"
-        android:id="@+id/whenFragment"
+        <ImageButton
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/imageButton"
+            android:layout_gravity="right"
+            android:src="@drawable/flatcameraicon"
+            />
+        </LinearLayout>
+    <TextView
+        android:layout_weight=".1"
         android:layout_width="match_parent"
-        android:layout_weight=".3"
         android:layout_height="0dp"
-        android:layout_gravity="center" />
+        android:text="Description" />
+    <EditText
+        android:layout_weight=".1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+    <Button
+        android:id="@+id/locater"
+        android:layout_weight=".1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="Get Location" />
 
-    <fragment android:name="com.example.victor.finalproject.Fragments.WhereFragment"
-        android:id="@+id/whereFragment"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_weight=".3"
         android:layout_height="0dp"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_weight=".1"
+        android:weightSum="2.0">
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="text" />
+        <EditText
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/txtLat"
+            android:singleLine="true" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:weightSum="2.0">
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="text" />
+        <EditText
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/txtLon"
+            android:singleLine="true" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:weightSum="2.0">
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="text" />
+        <EditText
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/txtRad"
+            android:singleLine="true" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -39,14 +110,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Cancel"
-            android:id="@+id/cancelButton" />
+            android:id="@+id/lostCancelButton" />
         <Button
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:text="Search"
-            android:id="@+id/searchButton" />
-
-
+            android:id="@+id/lostSearchButton" />
     </LinearLayout>
 </LinearLayout>

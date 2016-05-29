@@ -1,53 +1,57 @@
 package com.example.victor.finalproject;
 
-import android.app.FragmentManager;
-import android.content.res.Configuration;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.text.Layout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.victor.finalproject.Datacontainers.Item;
-import com.example.victor.finalproject.Fragments.WhatFragment;
-import com.example.victor.finalproject.Fragments.WhenFragment;
-import com.example.victor.finalproject.Fragments.WhereFragment;
+import com.example.victor.finalproject.Datacontainers.LocationSingleton;
 
-public class LostActivity extends FragmentActivity implements WhatWhenWhereInterface{
-    final static String SAVED_LOST_DESC = "savedLostDesc";
-    private WhatWhenWhereInterface fragmentInterface;
-    private WhatFragment whatf;
-    private WhenFragment whenf;
-    private WhereFragment wheref;
+public class LostActivity extends Activity {
+    final static String CAPS_STRING = "refernaename";;
     private Button search;
     private Button cancel;
-    private String inputLost;
+    private Button locater;
+    private LocationManager locationManager;
+    private static final long MIN_TIME_BETWEEN_LOCATION_UPDATES = 5 * 1000;    // milisecs
+    private static final float MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES = 1;  // meter
+    private boolean isTracking = false;
+    private EditText description;
+    private EditText latView;
+    private EditText lonView;
+    private EditText radView;
+    private Location userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        userLocation = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost);
 
-        FragmentManager fm = getFragmentManager();
         if(savedInstanceState != null){
 
-        }else{
-            inputLost = getString(R.string.description);
         }
 
-        //FragmentTransaction ft = fm.beginTransaction();
-        Configuration config = getResources().getConfiguration();
-        search = (Button) findViewById(R.id.searchButton);
-        cancel = (Button) findViewById(R.id.cancelButton);
+        search = (Button) findViewById(R.id.lostSearchButton);
+        cancel = (Button) findViewById(R.id.lostCancelButton);
+        locater = (Button) findViewById(R.id.locater);
+        latView = (EditText) findViewById(R.id.txtLat);
+        lonView = (EditText) findViewById(R.id.txtLon);
+        radView = (EditText) findViewById(R.id.txtRad);
         search.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -60,61 +64,127 @@ public class LostActivity extends FragmentActivity implements WhatWhenWhereInter
                 finish();
             }
         });
-        whatf = (WhatFragment) getSupportFragmentManager().findFragmentById(R.id.whatFragment);
-        whenf = (WhenFragment) getSupportFragmentManager().findFragmentById(R.id.whenFragment);
-        wheref = (WhereFragment) getSupportFragmentManager().findFragmentById(R.id.whereFragment);
+        locater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTracking();
+            }
+        });
+        SetupBroadcastReceivers();
     }
 
-    public void expand(int id){
+    private boolean startTracking() {
+        try {
+            if (locationManager == null) {
+                locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            }
 
-        String s = getString(R.string.lost_activity);
-        switch(id){
-            case 1://expand what
-                whatf.expand(s);
-                whatf.textSetter("lost", inputLost);
+            long minTime = MIN_TIME_BETWEEN_LOCATION_UPDATES;
+            float minDistance = MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES;
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
 
-                this.whenf.compress(s);
-                this.wheref.compress(s);
-            break;
-            case 2: //expand when
-
-                this.whatf.compress(s);
-                this.whenf.expand(s);
-                this.wheref.compress(s);
-
-            break;
-            case 3: //expand where
-                this.whatf.compress(s);
-                this.whenf.compress(s);
-                this.wheref.expand(s);
-            break;
+            if (locationManager != null) {
+                try {
+                    locationManager.requestLocationUpdates(minTime, minDistance, criteria, locationListener, null);
+                } catch (SecurityException ex) {
+                    //TODO: user have disabled location permission - need to validate this permission for newer versions
+                }
+            } else {
+                return false;
+            }
+            isTracking = true;
+            return true;
+        } catch (Exception ex) {
+            //things can go wrong
+            Log.e("TRACKER", "Error during start", ex);
+            return false;
         }
     }
-    public void onClick(View v){
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            LocationSingleton.getInstance().setLocation(location);
 
-        switch (v.getId()){
-            case R.id.whatfragmentButton:
-                expand(1);
-            break;
-            case R.id.whenfragmentButton:
-                expand(2);
-            break;
-            case R.id.wherefragmentButton:
-               expand(3);
-            break;
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(ProjectConstants.BroadcastLocationUpdateAction));
         }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+    private boolean stopTracking(){
+        try {
+            try{
+                locationManager.removeUpdates(locationListener);
+                isTracking = false;
+            } catch (SecurityException ex) {
+                //TODO: user have disabled location permission - need to validate this permission for newer versions
+            }
+
+            return true;
+        } catch (Exception ex) {
+            //things can go wrong here as well (listener is null)
+            Log.e("TRACKER", "Error during stop", ex);
+            return false;
+        }
+    }
+    private void SetupBroadcastReceivers()
+    {
+        LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.registerReceiver(locationUpdateReceiver, new IntentFilter(ProjectConstants.BroadcastLocationUpdateAction));
+    }
+
+    private void UnregisterBroadcastReceivers()
+    {
+        LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);
+        lbcm.unregisterReceiver(locationUpdateReceiver);
+
+    }
+    private BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context,"locationUpdateReceiver got "+ Item.JSONLocationGEN(LocationSingleton.getInstance().getLocation()),Toast.LENGTH_SHORT).show();
+            stopTracking();
+            userLocation = LocationSingleton.getInstance().getLocation();
+            setLocation(userLocation);
+        }
+    };
+
+    private void setLocation(Location l) {
+        lonView.setText(Double.toString(l.getLongitude()));
+        latView.setText(Double.toString(l.getLatitude()));
+        radView.setText(Float.toString(l.getAccuracy()));
+
     }
 
     private void senddata() {
         Log.d("Sender data...","not!");
-        String description = this.whatf.getDescription();
-        Bitmap thumbnail = this.whatf.getThumbnail();
-        Location location = this.wheref.getUserLocation();
-        this.whenf.requestData();
+        String description = null;
+        Bitmap thumbnail = null;
+        Location location = null;
       // Item item = new Item(int id, description, location, int userid, int timestamp, List<String> tags, thumbnail);
     }
     public void onSaveInstanceState(Bundle savedInstanceState){
         //Save the fragment's instance
-        savedInstanceState.putString(SAVED_LOST_DESC, inputLost);
+        //savedInstanceState.putString(CAPS_STRING, data);
     }
+    @Override
+    protected void onDestroy() {
+        UnregisterBroadcastReceivers();
+        super.onDestroy();
+    }
+
 }
