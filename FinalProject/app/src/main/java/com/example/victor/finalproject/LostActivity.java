@@ -11,39 +11,52 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.Datacontainers.LocationSingleton;
+import com.example.victor.finalproject.Helpers.ServerService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LostActivity extends Activity {
-    final static String CAPS_STRING = "refernaename";;
+    final static String SAVED_DESCRIPTION = "savedDescription";
     private Button search;
     private Button cancel;
     private Button locater;
     private LocationManager locationManager;
     private static final long MIN_TIME_BETWEEN_LOCATION_UPDATES = 5 * 1000;    // milisecs
     private static final float MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES = 1;  // meter
+    public final int THUMBNAIL = 667;
     private boolean isTracking = false;
+    private ImageView imageButton;
     private EditText description;
     private EditText latView;
     private EditText lonView;
     private EditText radView;
     private Location userLocation;
+    private Bitmap thumbnail;
+    private List<String> tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         userLocation = null;
+        List<String> tags = new ArrayList<String>();
+        tags.add("sort");
+        tags.add("sofa");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost);
 
         if(savedInstanceState != null){
-
+            description.setText(savedInstanceState.getString(SAVED_DESCRIPTION));
         }
 
         search = (Button) findViewById(R.id.lostSearchButton);
@@ -52,6 +65,8 @@ public class LostActivity extends Activity {
         latView = (EditText) findViewById(R.id.txtLat);
         lonView = (EditText) findViewById(R.id.txtLon);
         radView = (EditText) findViewById(R.id.txtRad);
+        description = (EditText) findViewById(R.id.editLostDescriptionText);
+        imageButton = (ImageView) findViewById(R.id.imageButton);
         search.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -68,6 +83,23 @@ public class LostActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startTracking();
+            }
+        });
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivityForResult(cameraIntent, THUMBNAIL);
+                    }else {
+                        Toast.makeText(LostActivity.this, "Image request denied!", Toast.LENGTH_LONG).show();
+                    }
+                }
+                catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         });
         SetupBroadcastReceivers();
@@ -159,11 +191,39 @@ public class LostActivity extends Activity {
             Toast.makeText(context,"locationUpdateReceiver got "+ Item.JSONLocationGEN(LocationSingleton.getInstance().getLocation()),Toast.LENGTH_SHORT).show();
             stopTracking();
             userLocation = LocationSingleton.getInstance().getLocation();
-            setLocation(userLocation);
+            showLocation(userLocation);
         }
     };
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode)
+        {
+            case THUMBNAIL:
+                if (resultCode == RESULT_OK)
+                {
+                    Bundle extras = data.getExtras();
+                    Bitmap tn = (Bitmap) extras.get("data");
+                    int width = tn.getWidth();
+                    int height = tn.getHeight();
+                    double newWidth = 100;
+                    double newHeight = height * newWidth/width;
 
-    private void setLocation(Location l) {
+                    Bitmap newBitmap = Bitmap.createScaledBitmap(tn, (int)newWidth, (int)newHeight,false);
+
+                    long time = System.currentTimeMillis()/1000;
+
+                    newBitmap = thumbnail;
+                    imageButton.setImageBitmap(newBitmap);
+                }
+                break;
+            default:
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showLocation(Location l) {
         lonView.setText(Double.toString(l.getLongitude()));
         latView.setText(Double.toString(l.getLatitude()));
         radView.setText(Float.toString(l.getAccuracy()));
@@ -171,15 +231,16 @@ public class LostActivity extends Activity {
     }
 
     private void senddata() {
-        Log.d("Sender data...","not!");
-        String description = null;
-        Bitmap thumbnail = null;
-        Location location = null;
-      // Item item = new Item(int id, description, location, int userid, int timestamp, List<String> tags, thumbnail);
+        //inserts dummy data: for :id, userId and timestamp
+        int id = 01;
+        int userId = 01;
+        Long timestamp = System.currentTimeMillis()/1000;
+        Item item = new Item(id, description.getText().toString(), userLocation, userId, timestamp, tags, thumbnail);
+        ServerService.storeItem(this,item);
     }
     public void onSaveInstanceState(Bundle savedInstanceState){
         //Save the fragment's instance
-        //savedInstanceState.putString(CAPS_STRING, data);
+        savedInstanceState.putString(SAVED_DESCRIPTION, description.getText().toString());
     }
     @Override
     protected void onDestroy() {
