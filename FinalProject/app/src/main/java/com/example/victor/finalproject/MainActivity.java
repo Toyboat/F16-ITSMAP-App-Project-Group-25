@@ -232,6 +232,11 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+
+
+    //LOCATION STUFF....
+
     private BroadcastReceiver locationUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -241,11 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
-
-
-    //LOCATION STUFF....
-
 
     private LocationListener locationListener = new LocationListener() {
         @Override
