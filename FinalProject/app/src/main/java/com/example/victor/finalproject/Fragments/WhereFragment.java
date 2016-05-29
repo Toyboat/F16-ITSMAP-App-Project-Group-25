@@ -66,8 +66,8 @@ public class WhereFragment extends Fragment {
                 userLocationKnown = true;
             }
         }
-        zoomToUser();//gets location?
-        setUpMapIfNeeded();//what do?
+        //zoomToUser();//gets location?
+        //setUpMapIfNeeded();//what do?
     }
 
     @Override
@@ -92,13 +92,23 @@ public class WhereFragment extends Fragment {
     public void expand(String s) {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (s == "lost") {
+            Log.d("pre.maps","longandlat" + getLocation().toString());
             view = inflater.inflate(R.layout.where_lost_opened, null);
+            //Location returnLocation = getLocation();
+            Log.d("mapsexpander","longandlat" + getLocation().toString());
         } else {
             view = inflater.inflate(R.layout.where_found_opened, null);
         }
         ViewGroup rootView = (ViewGroup) getView();
         rootView.removeAllViews();
         rootView.addView(view);
+    }
+
+    private Location getLocation() {
+        Location l = new Location("currentLocation");
+        l.setLatitude(userLatitude);
+        l.setLongitude(userLongitude);
+        return l;
     }
 
     public void compress(String s) {

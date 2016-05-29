@@ -22,17 +22,17 @@ public class Item {
     public final int id;
     public final String description;
     public final Location location;
-    public final int userid;
+    //public final int userid;
     public final int timestamp;
     public final Bitmap thumbnail;
     public final List<String> tags;
 
-    public Item(int id, String description, Location location, int userid, int timestamp, List<String> tags, Bitmap thumbnail)
+    public Item(int id, String description, Location location, int timestamp, List<String> tags, Bitmap thumbnail)
     {
         this.id = id;
         this.description = description;
         this.location = location;
-        this.userid = userid;
+        //this.userid = userid;
         this.timestamp = timestamp;
         this.tags = tags;
         this.thumbnail = thumbnail;
@@ -46,9 +46,9 @@ public class Item {
     public Location getLocation(){
         return this.location;
     }
-    public int getUserId(){
-        return this.userid;
-    }
+   // public int getUserId(){
+    //    return this.userid;
+    //}
     public int getTimeStamp(){
         return this.timestamp;
     }
@@ -59,7 +59,7 @@ public class Item {
 
     public static Item getDummy()
     {
-        return new Item(0,"DummyDescription",new Location("Loco"),0,0,new ArrayList<String>(), null);
+        return new Item(0,"DummyDescription",new Location("Loco"),0,new ArrayList<String>(), null);
     }
 
 
@@ -208,7 +208,7 @@ public class Item {
             String location = JSONLocationGEN(i.location);
             jObj.put(jsonLocation,new JSONObject(location));
 
-            jObj.put(jsonUserID, i.userid);
+            //jObj.put(jsonUserID, i.userid);
             jObj.put(jsonTimeStamp,i.timestamp);
             jObj.put(jsonThumbnail,BitmapToBase64(i.thumbnail));
             jObj.put(jsonTags,StringListToJson(i.tags));
@@ -235,7 +235,7 @@ public class Item {
             Log.println(Log.DEBUG,"FromJsonString","Commencing image decoding.");
             Bitmap thumbnail = Base64ToBitmap(jObj.getString(jsonThumbnail));
 
-            item = new Item(id,description,location,userid,timestamp,tags,thumbnail);
+            item = new Item(id,description,location,timestamp,tags,thumbnail);
 
         }catch(Exception e)
         {

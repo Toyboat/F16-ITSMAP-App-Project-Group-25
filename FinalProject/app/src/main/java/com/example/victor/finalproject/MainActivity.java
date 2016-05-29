@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 //ServerService a = new ServerService();
                 //public Item(int id, String description, Location location, int userid, int timestamp, List<String> tags, Bitmap thumbnail)
 
-                ServerService.searchFor(context, new Item(10, "", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, 10, new ArrayList<String>(), null));
+                ServerService.searchFor(context, new Item(10, "", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, new ArrayList<String>(), null));
             }
         });
 
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Bitmap newBitmap = Bitmap.createScaledBitmap(tn, (int)newWidth, (int)newHeight,false);
 
-                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, 10, new ArrayList<String>(), newBitmap));
+                    ServerService.storeItem(context, new Item(10, "Custom Thumbnail", Item.JSONLocationParse("{\"lat\":56.0, \"lon\":10.0,\"radius\":1000}"), 10, new ArrayList<String>(), newBitmap));
 
                 }
                 break;
