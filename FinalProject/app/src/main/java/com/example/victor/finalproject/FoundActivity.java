@@ -236,7 +236,7 @@ public class FoundActivity extends Activity {
         int userId = 01;
         Long timestamp = System.currentTimeMillis()/1000;
         Item item = new Item(id, description.getText().toString(), userLocation, userId, timestamp, tags, thumbnail);
-        ServerService.storeItem(this,item);
+        ServerService.searchFor(this,item);
     }
     public void onSaveInstanceState(Bundle savedInstanceState){
         //Save the fragment's instance
