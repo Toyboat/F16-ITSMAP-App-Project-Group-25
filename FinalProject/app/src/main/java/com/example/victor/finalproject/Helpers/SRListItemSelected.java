@@ -1,6 +1,7 @@
 package com.example.victor.finalproject.Helpers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.victor.finalproject.Datacontainers.Item;
 import com.example.victor.finalproject.R;
+import com.example.victor.finalproject.SettingsActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -73,6 +75,10 @@ public class SRListItemSelected {
 
                 Log.println(Log.DEBUG,"Item Button","Button Clicked! " + it.id);
                 Toast.makeText(cont, "Button clicked " + pos, Toast.LENGTH_SHORT).show();
+                /*
+                cont.startActivity(new Intent(cont, SettingsActivity.class));
+                Log.d("SpecialButton","Should have started an activity");
+                */
             }
         });
     }

@@ -90,9 +90,14 @@ public class ServerService extends IntentService {
 
     public static void searchFor(Context context, Item i)
     {
+        Log.d("static searchFor","new intent");
+
         Intent intent = new Intent(context,ServerService.class);
+        Log.d("static searchFor","setaction");
         intent.setAction(ACTION_SEARCH);
+        Log.d("static searchFor","encode to intent");
         i.EncodeToIntent(intent);
+        Log.d("static searchFor","start service");
         context.startService(intent);
 
     }
@@ -107,10 +112,14 @@ public class ServerService extends IntentService {
     //public static void searchFor(Item i)
     public void searchFor(Item i)
     {
+        Log.d("intent searchFor","getVolleyQueue");
         RequestQueue requestQueue = VolleyQueueInstance.getInstance().getRequestQueue();
+        Log.d("intent searchFor","getApplicationContext");
         Context context = getApplicationContext();
 
-        SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        Log.d("intent searchFor","getSharedPreferences");
+        SharedPreferences sp = context.getSharedPreferences(ProjectConstants.SharedPreferencesID, Context.MODE_PRIVATE);
+        Log.d("intent searchFor","getServerAddress");
         String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress,context.getString(R.string.server_address));
 
                // String address = context.getResources().getString(R.string.server_address);
@@ -211,7 +220,7 @@ public class ServerService extends IntentService {
         RequestQueue requestQueue = VolleyQueueInstance.getInstance().getRequestQueue();
         Context context = getApplicationContext();
 
-        SharedPreferences sp = context.getSharedPreferences(context.getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences(ProjectConstants.SharedPreferencesID, Context.MODE_PRIVATE);
         String address = sp.getString(ProjectConstants.SharedPrefs_ServerAddress, context.getString(R.string.server_address));
 
         String subdir = context.getResources().getString(R.string.server_subdir);

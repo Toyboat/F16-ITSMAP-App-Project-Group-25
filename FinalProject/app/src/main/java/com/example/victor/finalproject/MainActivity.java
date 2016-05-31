@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SetupBroadcastReceivers();
+        //SetupBroadcastReceivers();
     }
 
     @Override
@@ -296,6 +296,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    //Følgende kode kopieret fra eksempel kode der ligger på Kursets Blackboard side.
+    //COPY BEGIN (1)
     private LocationManager locationManager;
     private static final long MIN_TIME_BETWEEN_LOCATION_UPDATES = 5 * 1000;    // milisecs
     private static final float MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES = 1;  // meter
@@ -352,6 +355,8 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    //COPY END(1)
 
     @Override
     protected void onPause() {

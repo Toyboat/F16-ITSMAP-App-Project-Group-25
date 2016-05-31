@@ -58,9 +58,6 @@ public class FoundActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_found);
 
-        if(savedInstanceState != null){
-            description.setText(savedInstanceState.getString(SAVED_DESCRIPTION));
-        }
 
         search = (Button) findViewById(R.id.foundSearchButton);
         cancel = (Button) findViewById(R.id.foundCancelButton);
@@ -107,6 +104,9 @@ public class FoundActivity extends Activity {
                 }
             }
         });
+        if(savedInstanceState != null && description != null){
+            description.setText(savedInstanceState.getString(SAVED_DESCRIPTION));
+        }
         SetupBroadcastReceivers();
     }
 
@@ -270,14 +270,21 @@ public class FoundActivity extends Activity {
         int userId = 01;
         Long timestamp = System.currentTimeMillis()/1000;
         getLocationFromText();
+        String descr = "Placeholder Description";
+        if (description != null)
+        {
+            descr = description.getText().toString();
+        }
 
-        Item item = new Item(id,"Placeholder Description"/*description.getText().toString()*/, userLocation, userId, timestamp, tags, thumbnail);
+        Item item = new Item(id,descr, userLocation, userId, timestamp, tags, thumbnail);
         ServerService.storeItem(this,item);
     }
     public void onSaveInstanceState(Bundle savedInstanceState){
         Log.d(moduleName,"onSaveInstanceState();");
         //Save the fragment's instance
-        //savedInstanceState.putString(SAVED_DESCRIPTION, description.getText().toString());
+        if (description != null) {
+            savedInstanceState.putString( SAVED_DESCRIPTION, description.getText().toString() );
+        }
     }
     @Override
     protected void onDestroy() {

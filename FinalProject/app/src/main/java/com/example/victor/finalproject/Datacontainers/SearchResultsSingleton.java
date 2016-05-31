@@ -62,9 +62,6 @@ public class SearchResultsSingleton {
 
     public void cleanup()
     {
-        synchronized (SearchResults)
-        {
             SearchResults = null;
-        }
     }
 }

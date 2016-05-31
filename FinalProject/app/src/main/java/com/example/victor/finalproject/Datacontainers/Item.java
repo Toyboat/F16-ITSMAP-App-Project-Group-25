@@ -128,6 +128,10 @@ public class Item {
         Log.println(Log.DEBUG, "decodeBase64", "Commencing image decoding.");
         byte[] decodedBytes = Base64.decode(input, Base64.DEFAULT);
         Log.println(Log.DEBUG, "decodeBase64", "decodedBytes.length: " + Integer.toString(decodedBytes.length) );
+        if (decodedBytes.length == 0)
+        {
+            return null;
+        }
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
@@ -164,7 +168,7 @@ public class Item {
                 e.printStackTrace();
             }
         }
-
+        Log.d("Base64ToBitmap","returning bitmap");
         return bitmap;
     }
 
@@ -229,15 +233,22 @@ public class Item {
         try {
             JSONObject jObj = new JSONObject(jsonString);
             //public Item(int id, String description, Location location, int userid, int timestamp, List<String> tags, Bitmap thumbnail)
+            Log.d("fromJSONString","id");
             int id = jObj.getInt(jsonID);
+            Log.d("fromJSONString","description");
             String description = jObj.getString(jsonDescription);
+            Log.d("fromJSONString","location");
             Location location = JSONLocationParse(jObj.getJSONObject(jsonLocation).toString());
+            Log.d("fromJSONString","userid");
             int userid = jObj.getInt(jsonUserID);
+            Log.d("fromJSONString","timestamp");
             int timestamp = jObj.getInt(jsonTimeStamp);
+            Log.d("fromJSONString","tags");
             List<String> tags = JsonToStringList(jObj.get(jsonTags).toString());
             Log.println(Log.DEBUG,"FromJsonString","Commencing image decoding.");
             Bitmap thumbnail = Base64ToBitmap(jObj.getString(jsonThumbnail));
 
+            Log.d("fromJSONString","create item instance");
             item = new Item(id,description,location,userid,timestamp,tags,thumbnail);
 
         }catch(Exception e)
@@ -245,6 +256,7 @@ public class Item {
             e.printStackTrace();
         }
 
+        Log.d("fromJSONString","return item");
 
         return item;
 
@@ -268,6 +280,7 @@ public class Item {
         if (intent.hasExtra(intentItemKey))
         {
             String itemJson = intent.getStringExtra(intentItemKey);
+            Log.d("Decode Item from Intent",itemJson);
             return Item.fromJSONString(itemJson);
         }
         return null;

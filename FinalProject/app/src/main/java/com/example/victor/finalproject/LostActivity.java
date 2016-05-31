@@ -34,11 +34,7 @@ public class LostActivity extends Activity {
     private Button search;
     private Button cancel;
     private Button locater;
-    private LocationManager locationManager;
-    private static final long MIN_TIME_BETWEEN_LOCATION_UPDATES = 5 * 1000;    // milisecs
-    private static final float MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES = 1;  // meter
     public final int THUMBNAIL = 667;
-    private boolean isTracking = false;
     private ImageView imageButton;
     private EditText description;
     private EditText latView;
@@ -58,9 +54,7 @@ public class LostActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lost);
 
-        if(savedInstanceState != null){
-            description.setText(savedInstanceState.getString(SAVED_DESCRIPTION));
-        }
+
 
         search = (Button) findViewById(R.id.lostSearchButton);
         cancel = (Button) findViewById(R.id.lostCancelButton);
@@ -105,8 +99,20 @@ public class LostActivity extends Activity {
                 }
             }
         });
+
+        if(savedInstanceState != null && description != null){
+            description.setText(savedInstanceState.getString(SAVED_DESCRIPTION));
+        }
         SetupBroadcastReceivers();
     }
+
+    //Følgende kode kopieret fra eksempel kode der ligger på Kursets Blackboard side.
+    //COPY BEGIN (1)
+
+    private LocationManager locationManager;
+    private static final long MIN_TIME_BETWEEN_LOCATION_UPDATES = 5 * 1000;    // milisecs
+    private static final float MIN_DISTANCE_MOVED_BETWEEN_LOCATION_UPDATES = 1;  // meter
+    private boolean isTracking = false;
 
     private boolean startTracking() {
         try {
@@ -137,6 +143,26 @@ public class LostActivity extends Activity {
             return false;
         }
     }
+
+    private boolean stopTracking(){
+        try {
+            try{
+                locationManager.removeUpdates(locationListener);
+                isTracking = false;
+            } catch (SecurityException ex) {
+                //TODO: user have disabled location permission - need to validate this permission for newer versions
+            }
+
+            return true;
+        } catch (Exception ex) {
+            //things can go wrong here as well (listener is null)
+            Log.e("TRACKER", "Error during stop", ex);
+            return false;
+        }
+    }
+
+    //COPY END(1)
+
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -162,22 +188,6 @@ public class LostActivity extends Activity {
 
         }
     };
-    private boolean stopTracking(){
-        try {
-            try{
-                locationManager.removeUpdates(locationListener);
-                isTracking = false;
-            } catch (SecurityException ex) {
-                //TODO: user have disabled location permission - need to validate this permission for newer versions
-            }
-
-            return true;
-        } catch (Exception ex) {
-            //things can go wrong here as well (listener is null)
-            Log.e("TRACKER", "Error during stop", ex);
-            return false;
-        }
-    }
     private void SetupBroadcastReceivers()
     {
         LocalBroadcastManager lbcm = LocalBroadcastManager.getInstance(this);

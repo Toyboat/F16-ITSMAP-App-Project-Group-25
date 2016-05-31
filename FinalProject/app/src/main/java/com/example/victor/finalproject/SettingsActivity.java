@@ -28,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
         Address = "ServerAddress (Error 3, OnCreate unassigned)";
 
 
-        SharedPreferences sp = getSharedPreferences(getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences(ProjectConstants.SharedPreferencesID, Context.MODE_PRIVATE);
         if (savedInstanceState != null)
         {
             if (savedInstanceState.containsKey(ProjectConstants.SharedPrefs_ServerAddress)) {
