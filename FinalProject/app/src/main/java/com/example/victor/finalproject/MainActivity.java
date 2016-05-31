@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sharedpreferences = getSharedPreferences(getString(R.string.shared_prefs_id), Context.MODE_PRIVATE);
+        SharedPreferences sharedpreferences = getSharedPreferences(ProjectConstants.SharedPreferencesID, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         if (!sharedpreferences.contains(ProjectConstants.SharedPrefs_ServerAddress))
         {
